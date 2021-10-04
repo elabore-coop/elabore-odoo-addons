@@ -1,0 +1,591 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="appointment_country" name="Appointment Country">
+        <t t-call="website.layout">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="multisteps-form__progress shadow-sm">
+                            <button class="multisteps-form__progress-btn js-active" type="button">Locations</button>
+                            <button class="multisteps-form__progress-btn" type="button">Services</button>
+                            <button class="multisteps-form__progress-btn" type="button">Provider</button>
+                            <button class="multisteps-form__progress-btn" type="button">Date &amp; Time</button>
+                            <button class="multisteps-form__progress-btn" type="button">Details</button>
+                            <button class="multisteps-form__progress-btn" type="button">Complete</button>
+                        </div>
+                    </div>
+                </div>
+                 <t t-if="not appoint_group">
+                    <div class="alert alert-warning mt8" role="alert">
+                        There are no records.
+                    </div>
+                </t>
+                 <t t-if="appoint_group">
+                      <div class="row no-gutters">
+                    <div class="col-lg-12 col-sm-12">
+                        <div class="multisteps-form h-auto">
+                            <!-- Start: Locations Panel -->
+                            <div class="multisteps js-active" data-animation="scaleIn">
+                                <div class="multistep_contents">
+                                    <div class="step_action_box shadow-sm border-bottom p-3">
+                                        <div class="d-flex align-items-center">
+                                            <h5 class="mb-0 text-uppercase">1. Select Your Location</h5>
+                                        </div>
+                                    </div>
+                                    <form t-attf-action="/appointment" method="post">
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                                        <t t-if="appoint_group" t-foreach="appoint_group" t-as="data">
+                                            <div t-if="data.appointment_group_ids" class="card mb-3" >
+                                                <a class="select_location_btn btn rounded-0 position-absolute"
+                                                   t-attf-href="/appointment/#{data.state_id.id}/?country_id=#{data.country_id.id}&amp;group_id=#{data.id}"
+                                                   style="color:#fff;">Select
+<!--                                                    ?id=#{appointees.id}&amp;country_id=#{country}-->
+                                                </a>
+                                                <div class="row no-gutters">
+                                                    <div class="col-md-4">
+                                                        <img class="img-fluid h-100"
+                                                             t-attf-src="{{data.country_id.image_url}}"/>
+
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <div class="card-body">
+                                                            <h5 class="card-title">
+                                                                <t t-esc="data.state_id.name"/>
+                                                            </h5>
+                                                            <p class="card-text">
+                                                                <t t-esc="data.country_id.name"/>
+                                                            </p>
+                                                            <p class="card-text"></p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </form>
+
+                                </div>
+                            </div>
+                            <!-- End: Locations Panel -->
+                        </div>
+                    </div>
+
+                </div>
+                </t>
+
+            </div>
+        </t>
+    </template>
+
+    <template id="appointment_1" name="Appointment">
+        <t t-call="website.layout">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="multisteps-form__progress shadow-sm">
+                            <button class="multisteps-form__progress-btn js-active" type="button">Locations</button>
+                            <button class="multisteps-form__progress-btn js-active" type="button">Services</button>
+                            <button class="multisteps-form__progress-btn" type="button">Provider</button>
+                            <button class="multisteps-form__progress-btn" type="button">Date &amp; Time</button>
+                            <button class="multisteps-form__progress-btn" type="button">Details</button>
+                            <button class="multisteps-form__progress-btn" type="button">Complete</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row no-gutters">
+                    <div class="col-lg-12 col-sm-12">
+                        <div class="multisteps-form h-auto">
+                            <!-- Start: Locations Panel -->
+                            <div class="multisteps js-active" data-animation="scaleIn">
+                                <div class="multistep_contents">
+                                    <div class="step_action_box shadow-sm border-bottom p-3">
+                                        <div class="d-flex align-items-center">
+                                            <h5 class="mb-0 text-uppercase">2. Select Your Service</h5>
+                                        </div>
+                                    </div>
+                                    <form t-attf-action="/website/appointment" method="post">
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                        <t t-foreach="appoint_group" t-as="group">
+                                            <t t-foreach="group.product_template_id" t-as="cal">
+                                            <div class="card mb-3">
+                                                <a class="select_location_btn btn rounded-0 position-absolute"
+                                                   t-attf-href="/website/appointment?id=#{group.id}&amp;country_id=#{appoint_group.country_id.id}"
+                                                   style="color:#fff;">Select
+                                                </a>
+                                                <div class="row no-gutters">
+                                                    <div class="col-md-4">
+                                                        <div class="img-fluid rounded_avtar_bg rounded-circle shadow-sm mt-3"
+                                                             t-attf-style="background: url('/web/image/product.template/#{cal.id}/image_1920') no-repeat center;"></div>
+
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <div class="card-body">
+                                                            <h5 class="card-title">
+                                                                <t t-esc="cal.name"/>
+                                                            </h5>
+                                                            <!--                              <p class="card-text"><i class="fa fa-money"></i> Actual Price: <t t-esc="cal.list_price"/></p>-->
+                                                            <!--                              <p class="card-text"><i class="fa fa-clock-o"></i>  Duration: <t t-esc="cal.duration"/></p>-->
+                                                            <p class="card-text">
+                                                                <i class="fa fa-align-center"></i>
+                                                                Description:
+                                                                <t t-esc="cal.description"/>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            </t>
+                                        </t>
+                                    </form>
+
+                                </div>
+                            </div>
+                            <!-- End: Locations Panel -->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </t>
+    </template>
+    <template id="appointees_availability" name="Appointees Availability">
+        <t t-call="website.layout">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="multisteps-form__progress shadow-sm">
+                            <button class="multisteps-form__progress-btn js-active" type="button">Locations</button>
+                            <button class="multisteps-form__progress-btn js-active" type="button">Services</button>
+                            <button class="multisteps-form__progress-btn js-active" type="button">Provider</button>
+                            <button class="multisteps-form__progress-btn" type="button">Date &amp; Time</button>
+                            <button class="multisteps-form__progress-btn" type="button">Details</button>
+                            <button class="multisteps-form__progress-btn" type="button">Complete</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row no-gutters">
+                    <div class="col-lg-12 col-sm-12">
+                        <div class="multisteps" data-animation="scaleIn">
+
+                            <div class="multistep_contents">
+                                <div class="step_action_box shadow-sm border-bottom p-3">
+                                    <div class="d-flex align-items-center">
+                                        <h5 class="mb-0 text-uppercase">3. Select Your Provider</h5>
+                                    </div>
+                                </div>
+                                <t t-foreach="appoint_group_ids.appointment_group_ids" t-as="appointees">
+                                    <form class="o_website_appoinment_form" t-attf-action="/website/appointment/slot"
+                                          method="post">
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                        <div class="card mb-3">
+<!--                                            style="max-width: 540px;">-->
+                                            <a id="check_slot_availability" class="select_location_btn btn rounded-0 position-absolute"
+                                               t-attf-href="
+                                               /website/appointment/slot?id=#{appointees.id}&amp;country_id=#{country}&amp;product_id=#{appoint_group_ids.id}"
+                                               style="color:#fff;">Select
+                                            </a>
+
+                                            <div class="row no-gutters">
+                                                <div class="col-md-4">
+                                                    <div class="img-fluid rounded_avtar_bg rounded-circle shadow-sm mt-3"
+                                                         t-attf-style="background: url('/web/image/res.partner/#{appointees.id}/image_1920') no-repeat center;"></div>
+
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <div class="card-body">
+                                                        <h5 class="card-title">
+                                                            <t t-esc="appointees.name"/>
+                                                        </h5>
+                                                        <p class="card-text">
+                                                            <span>
+                                                                <i class="fa fa-clock-o"></i>
+                                                                Duration:
+                                                            </span>
+                                                            <!-- <span>30 Minutes</span> -->
+                                                            <span t-esc="appointees.appointment_type.appointment_duration" t-options='{"widget": "float", "precision": 2}'/>
+                                                            <span>Hour</span>
+                                                        </p>
+                                                        <p class="card-text">
+                                                            <span>
+                                                                <i class="fa fa-money"></i>
+                                                                Appointment Charge:
+                                                            </span>
+                                                            <span>
+                                                                <span t-field="appointees.currency_id.symbol" />
+                                                                <t t-esc="appointees.appointment_charge"/>
+                                                            </span>
+                                                        </p>
+                                                        <p class="card-text">
+                                                            <t t-if="appointees.work_exp">
+                                                                <span>
+                                                                    <i class="fa fa-suitcase"></i>
+                                                                    Work Experience:
+                                                                </span>
+                                                                <span>
+                                                                    <t t-esc="appointees.work_exp"/>
+                                                                </span>
+                                                            </t>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+    <template id="slot" name="Slot">
+        <t t-call="website.layout">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="multisteps-form__progress shadow-sm">
+                            <button class="multisteps-form__progress-btn js-active" type="button">Locations</button>
+                            <button class="multisteps-form__progress-btn js-active" type="button">Services</button>
+                            <button class="multisteps-form__progress-btn js-active" type="button">Provider</button>
+                            <button class="multisteps-form__progress-btn js-active" type="button">Date &amp; Time
+                            </button>
+                            <button class="multisteps-form__progress-btn " type="button">Details</button>
+                            <button class="multisteps-form__progress-btn" type="button">Complete</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="multisteps" data-animation="scaleIn">
+                    <div class="multistep_contents">
+                        <div class="step_action_box shadow-sm border-bottom p-3">
+                            <div class="d-flex align-items-center">
+                                <h5 class="mb-0 text-uppercase">4. Select Date &amp; Time</h5>
+                            </div>
+                        </div>
+                        <div class="step_contents">
+                            <div class="row calendar_row">
+                                <div class="calendar_1 col-xl-6">
+                                    <div class="_slider">
+                                        <a href="#" class="_slider_next">&#10095;</a>
+                                        <a href="#" class="_slider_prev">&#10094;</a>
+                                        <ul class="calendar_inherit">
+                                            <li t-foreach="slots" t-as="month">
+                                                <h3 t-esc="month['month']"/>
+                                                <table class="table">
+                                                    <tr class="active">
+                                                        <th class="text-center">Mon</th>
+                                                        <th class="text-center">Tue</th>
+                                                        <th class="text-center">Wed</th>
+                                                        <th class="text-center">Thu</th>
+                                                        <th class="text-center">Fri</th>
+                                                        <th class="text-center">Sat</th>
+                                                        <th class="text-center">Sun</th>
+                                                    </tr>
+                                                    <tr t-foreach="month['weeks']" t-as="weeks" class="o_calendar_days">
+                                                        <t t-foreach="weeks" t-as="day">
+                                                            <td t-attf-class="text-center#{day['slots'] and ' o_day dropdown' or ''} #{day['weekend_cls']} #{day['today_cls']}"
+                                                                t-attf-title="#{day['today_cls'] and 'Today' or ''}">
+                                                                <t t-if="day['slots']">
+                                                                    <div class="dropdown-toggle o_slots_dropdown"
+                                                                         data-toggle="dropdown" aria-haspopup="true"
+                                                                         aria-expanded="false">
+                                                                        <strong>
+                                                                            <span t-esc="day['day'].day"/>
+                                                                        </strong>
+                                                                    </div>
+                                                                    <div class="dropdown-menu" role="menu">
+                                                                        <t t-foreach="day['slots']" t-as="slot">
+                                                                            <a t-if='slot' role="menuitem"
+                                                                               class="dropdown-item"
+                                                                               t-attf-href="/website/appointment/form/#{appointment_type.id}/info?date_time=#{slot['datetime']}&amp;country=#{country_id}&amp;group_product_id=#{appoint_group_id.id}"
+                                                                               t-esc="slot['hours']"/>
+                                                                        </t>
+                                                                    </div>
+                                                                </t>
+                                                                <t t-if="not day['slots']">
+                                                                    <div t-esc="day['day'].day"
+                                                                         t-att-class="day['mute_cls']"/>
+                                                                </t>
+                                                            </td>
+                                                        </t>
+                                                    </tr>
+                                                    <!--to fix bootstrap md height add empty tr so now each month has 6 weeks row -->
+                                                    <tr t-if="len(month['weeks']) == 5" class="o_calendar_days"/>
+                                                </table>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+    <template id="slot_available" name="Slot Availability">
+        <t t-call="website.layout">
+            <div class="container nosolts">
+                <div class="row">
+                    <div class="col-12">
+                        <h1>Oops!! No Slots Available For this Appointees.</h1>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+    <template id="appointment_form" name="Appointment Form">
+        <t t-call="website.layout">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="multisteps-form__progress shadow-sm">
+                            <button class="multisteps-form__progress-btn js-active" type="button">Locations</button>
+                            <button class="multisteps-form__progress-btn js-active" type="button">Services</button>
+                            <button class="multisteps-form__progress-btn js-active" type="button">Provider</button>
+                            <button class="multisteps-form__progress-btn js-active" type="button">Date &amp; Time
+                            </button>
+                            <button class="multisteps-form__progress-btn js-active" type="button">Details</button>
+                            <button class="multisteps-form__progress-btn" type="button">Complete</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row no-gutters">
+                    <div class="col-lg-12 col-sm-12">
+                        <div class="multisteps" data-animation="scaleIn">
+                            <div class="multistep_contents">
+                                <div class="step_action_box shadow-sm border-bottom p-3">
+
+                                    <div class="d-flex align-items-center">
+                                        <h5 class="mb-0 text-uppercase">5. Confirm your details</h5>
+                                    </div>
+                                </div>
+                                <div class="step_contents">
+                                    <form class="mt32 appointment_submit_form"
+                                          t-attf-action="/website/calendar/#{ slug(appointment_type) }/submit?date_time=#{datetime_str}&amp;country_id=#{country}&amp;appoint_group_id=#{appoint_group_id.id}"
+                                          method="POST">
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                        <div class="form-row">
+                                            <div class="col-lg-6">
+                                                <div class="form-group">
+                                                    <label for="name">First Name</label>
+                                                    <input type="text" class="form-control" placeholder="First Name"
+                                                           name="name" required="1" t-attf-value="#{partner_name}"/>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <label for="country_id">Last Name
+                                                </label>
+                                                <input type="text" class="form-control" placeholder="Last Name"
+                                                       name="last_name" required="1"
+                                                       t-att-value="'last_name' in partner_data and partner_data['last_name']"/>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="form-group">
+                                                    <label for="email">Your Email</label>
+                                                    <input type="email" class="form-control" placeholder="Email"
+                                                           name="email" t-attf-value="#{partner_email}" required="1"/>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="form-group">
+                                                    <label for="phone">Your Phone</label>
+                                                    <input type="number" class="form-control" name="phone"
+                                                           placeholder="+1 (650) 691-3277" required="1" id="phone_field"
+                                                           t-attf-value="#{partner_phone}"/>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6 d-none" t-if="request.session.uid">
+                                                <div class="form-group">
+                                                    <label for="phone">Your Country</label>
+                                                    <input type="text" class="form-control" name="country_id"
+                                                           t-attf-value="#{country} " readonly="True"/>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12">
+                                                <div class="form-group">
+                                                    <label for="phone">Your Message</label>
+                                                    <textarea type="text" class="form-control" name="description"
+                                                              id="description" t-attf-value="#{description}"
+                                                              placeholder="Your Message"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="text-center">
+                                            <button type="submit" class="btn btn-lg text-uppercase  px-sm-4 bg-dark">
+                                                Submit
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </t>
+    </template>
+    <template id="appointment_confirm" name="Appointment Confirm">
+        <t t-call="website.layout">
+            <div class="container">
+                <div id="wrap" class="o_website_calendar">
+                    <div class="oe_structure container mb128">
+                        <h1 class="o_page_header appointment_main_title">
+                            <span t-esc="event.name"/>
+                            Appointment:
+                            <span t-esc="event.doctore_id.name"/>
+                            with
+                            <!--                        <span t-esc="event.partner_ids.name"/>-->
+                            <span t-esc="event.partner_new.name"/>
+                        </h1>
+
+                        <div class="alert alert-info" t-if="message=='new'" role="status">
+                            <p>
+                                <strong>Your appointment has been successfully booked!</strong>
+                            </p>
+                        </div>
+                        <div class="alert alert-danger" t-if="message=='no-cancel'" role="alert">
+                            <p>
+                                <strong>Your appointment is in less than
+                                    <t t-esc="event.appointment_type_id.min_cancellation_hours"/>
+                                    hours from now!
+                                </strong>
+                                <br/>
+                                It's too late to cancel online, please contact the attendees another way if you really
+                                can't make it.
+                            </p>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-md-8 col-sm-10 mx-auto bg_light_grey">
+                                <div class="appointment_information">
+                                    <div class="row">
+                                        <div class="col-md-2 text-right">
+                                            <label>When:</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <t t-esc="event.start" widget="datetime"/>
+                                            <br/>
+                                            <i class="text-muted">(timezone:<t t-esc="request.session.timezone"/>)
+                                            </i>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-2 text-right">
+                                            <label>Duration:</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <t t-esc="event.start_time"/>
+                                            <span>-</span>
+                                            <t t-esc="event.end_time"/>
+                                            Hours
+                                            <!--	                                <t t-if="event.duration>=2">s</t>-->
+                                        </div>
+                                    </div>
+                                    <div t-if="event.location" class="row">
+                                        <div class="col-md-2 text-right">
+                                            <label>Location:</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <t t-esc="event.location"/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-2 text-right">
+                                            <label>Attendees:</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <!--                                    <t t-esc="event.partner_ids.name"/>-->
+                                            <!--                                    <t t-esc="event.partner_ids.last_name"/>-->
+                                            <t t-esc="event.partner_new.name"/>
+                                            <t t-esc="event.partner_new.last_name"/>
+                                        </div>
+                                    </div>
+                                    <div t-if="event.description" class="row">
+                                        <div class="col-md-2 text-right">
+                                            <label>Description:</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <div t-field="event.description"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+    <template id="payment_option" name="Payment Option">
+        <t t-call="website_sale.payment"/>
+    </template>
+    <template id="payment_inherit" name="Payment" inherit_id="website_sale.payment">
+        <xpath expr="//div[@id='shipping_and_billing']" position="replace">
+            <t t-if="order and not event">
+                <div class="card-body" id="shipping_and_billing">
+                    <a class='float-right no-decoration' href='/shop/checkout'>
+                        <i class="fa fa-edit"/>
+                        Edit
+                    </a>
+                    <t t-set="same_shipping"
+                       t-value="bool(order.partner_shipping_id==order.partner_id or only_services)"/>
+                    <div>
+                        <b>Billing<t t-if="same_shipping and not only_services">&amp; Shipping</t>:
+                        </b>
+                        <span t-esc='order.partner_id'
+                              t-options="dict(widget='contact', fields=['address'], no_marker=True, separator=', ')"
+                              class="address-inline"/>
+                    </div>
+                    <div t-if="not same_shipping and not only_services" groups="sale.group_delivery_invoice_address">
+                        <b>Shipping:</b>
+                        <span t-esc='order.partner_shipping_id'
+                              t-options="dict(widget='contact', fields=['address'], no_marker=True, separator=', ')"
+                              class="address-inline"/>
+                    </div>
+                </div>
+            </t>
+            <t t-if="order and event">
+                <div class="card-body d-none" id="shipping_and_billing">
+                    <a class='float-right no-decoration' href='/shop/checkout'>
+                        <i class="fa fa-edit"/>
+                        Edit
+                    </a>
+                    <t t-set="same_shipping"
+                       t-value="bool(order.partner_shipping_id==order.partner_id or only_services)"/>
+                    <div>
+                        <b>Billing<t t-if="same_shipping and not only_services">&amp; Shipping</t>:
+                        </b>
+                        <span t-esc='order.partner_id'
+                              t-options="dict(widget='contact', fields=['address'], no_marker=True, separator=', ')"
+                              class="address-inline"/>
+                    </div>
+                    <div t-if="not same_shipping and not only_services" groups="sale.group_delivery_invoice_address">
+                        <b>Shipping:</b>
+                        <span t-esc='order.partner_shipping_id'
+                              t-options="dict(widget='contact', fields=['address'], no_marker=True, separator=', ')"
+                              class="address-inline"/>
+                    </div>
+                </div>
+            </t>
+        </xpath>
+        <xpath expr="//div[@id='wrap']/div/div/div" position="replace">
+            <t t-if="order and event">
+                <div class='col-12 d-none'>
+                    <t t-call="website_sale.wizard_checkout">
+                        <t t-set="step" t-value="40"/>
+                    </t>
+                </div>
+            </t>
+            <t t-if="order and not event">
+                <div class='col-12'>
+                    <t t-call="website_sale.wizard_checkout">
+                        <t t-set="step" t-value="40"/>
+                    </t>
+                </div>
+            </t>
+        </xpath>
+    </template>
+</odoo>
