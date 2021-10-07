@@ -9,7 +9,7 @@
     'version': '14.0.1.1.0',
     # any module necessary for this one to work correctly
     'depends': ['base','calendar','account','crm','contacts',
-                'website','website_sale', 'hr'],
+                'website','website_sale', 'hr', 'sms'],
 
     # always loaded
     'data': [

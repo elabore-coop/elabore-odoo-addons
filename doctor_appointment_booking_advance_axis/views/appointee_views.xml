@@ -10,9 +10,9 @@
         <field name="arch" type="xml">
             <field name="name" position="after">
                 <field name="last_name" placeholder="Last name"/>
-                <group>
+                <!--<group>
                 <field name="full_name" invisible="1"/>
-                </group>
+                </group>-->
             </field>
             <xpath expr="//field[@name='vat']" position="before">
                 <field name="appointment_group_ids" widget="many2many_tags"/>
