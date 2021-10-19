@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	
+	<function name="_update_views" model="budget.forecast.category" />
+		
+</odoo>

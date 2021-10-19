@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+	<record id="view_budget_forecast_form" model="ir.ui.view">
+		<field name="name">budget.forecast.form</field>
+		<field name="model">budget.forecast</field>
+		<field name="arch" type="xml">
+			<form>
+				<sheet>
+					<group>
+						<group>
+							<field name="category_id" />
+							<field name="parent_id" />
+							<field name="name" />
+						</group>
+						<group>
+							<field name="product_id" />
+							<field name="product_uom_id" />						
+						</group>
+					</group>
+					<group>
+						<group>
+							<field name="plan_price"/>
+							<field name="actual_price"/>
+						</group>
+						<group>
+							<field name="plan_qty"/>
+							<field name="actual_qty"/>											
+						</group>
+						<group>
+							<field name="plan_amount" />
+							<field name="actual_amount"/>  
+						</group>
+					</group>
+					<group string="Analytic Lines">
+						<field name="analytic_line_ids" nolabel="1" mode="tree" />
+					</group>
+					<group string="Childs" attrs="{'invisible' : [('child_ids','=', False)]}">
+						<field name="child_ids" nolabel="1" mode="tree" />
+					</group>					
+				</sheet>
+			</form>
+		</field>
+	</record>
+
+	<record id="view_budget_forecast_tree" model="ir.ui.view">
+		<field name="name">budget.forecast.tree</field>
+		<field name="model">budget.forecast</field>
+		<field name="arch" type="xml">
+			<tree>
+				<field name="category_id" />
+				<field name="parent_id" />
+				<field name="name" />
+				<field name="product_id" />
+				<field name="product_uom_id" />		
+				<field name="plan_amount" sum="total"/>
+				<field name="actual_price" sum="total"/>		
+				<field name="plan_qty" sum="total"/>
+				<field name="actual_qty" sum="total"/>
+				<field name="plan_amount" sum="total" />
+				<field name="actual_amount" sum="total"/>  						
+			</tree>
+		</field>
+	</record>
+
+
+</odoo>

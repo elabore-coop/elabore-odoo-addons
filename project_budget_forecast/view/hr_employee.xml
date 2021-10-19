@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+	<record id="hr_employee_view_form_inherit_timesheet" model="ir.ui.view">
+		<field name="name">hr.employee.form.timesheet</field>
+		<field name="model">hr.employee</field>
+		<field name="priority">20</field>
+		<field name="inherit_id" ref="hr.view_employee_form" />
+		<field name="arch" type="xml">
+			<group name="timesheet" groups="hr_timesheet.group_timesheet_manager" position="inside">
+				<field name="timesheet_product_id" />
+			</group>
+		</field>
+	</record>
+
+</odoo>

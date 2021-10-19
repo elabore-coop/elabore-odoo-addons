@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+	<record id="view_analytic_budget_forecast" model="ir.ui.view">
+		<field name="name">analytic.analytic.account.budget.forecast</field>
+		<field name="model">account.analytic.account</field>
+		<field name="priority">100</field>
+		<field name="arch" type="xml">
+			<form string="Project Budget" create="false" delete="false">
+				<sheet string="Project Budget">
+					<group>
+						<group>
+							<field name="plan_amount"/>
+							<field name="actual_amount"/>
+						</group>
+						<group>
+						
+						</group>
+					</group>
+					<notebook>
+						<page name="summary" string="Summary" attrs="{'invisible' : [('project_section_budget_ids', '=', False)]}">
+							<field name="project_section_budget_ids" nolabel="1" readonly = "1">
+								<tree>
+									<field name="category_id" />
+									<field name="name" />
+									<field name="plan_amount" sum="Total"/>
+									<field name="actual_amount" sum="Total"/>									
+								</tree>
+							</field>
+						</page>
+					</notebook>
+				</sheet>
+			</form>
+		</field>
+	</record>
+		
+	<record id="view_account_analytic_account_form" model="ir.ui.view">
+		<field name="name">analytic.analytic.account.form</field>
+		<field name="model">account.analytic.account</field>
+		<field name="inherit_id" ref="analytic.view_account_analytic_account_form" />
+		<field name="arch" type="xml">
+			<div name="button_box">
+				<button type="object" name="action_budget_forecast" class="oe_stat_button" icon="fa-usd">
+					<field name="plan_amount" widget="statinfo" string="Budget" />
+				</button>
+			</div>
+		</field>
+	</record>
+		
+</odoo>

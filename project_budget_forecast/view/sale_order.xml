@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+	<record id="view_order_form" model="ir.ui.view">
+		<field name="name">sale.order.form</field>
+		<field name="model">sale.order</field>
+		<field name="inherit_id" ref="sale.view_order_form" />
+		<field name="arch" type="xml">
+			<div name="button_box">
+				<button type="object" name="action_budget_forecast" class="oe_stat_button" icon="fa-usd">
+					<field name="plan_amount" widget="statinfo" string="Budget" />
+				</button>
+			</div>
+		</field>
+	</record>
+
+</odoo>

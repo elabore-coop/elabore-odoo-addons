@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">	
+	  <record id="product_category_manpower" model="product.category" forcecreate="True">
+        <field name="name">Manpower</field>
+		    <field name="budget_category_id" ref="budget_category_manpower"/>
+    </record>
+
+	  <record id="product_category_equipments" model="product.category" forcecreate="True">
+        <field name="name">Equipments</field>
+		    <field name="budget_category_id" ref="budget_category_equipments"/>
+    </record>
+
+	  <record id="product_category_material" model="product.category" forcecreate="True">
+      <field name="name">Material</field>
+		  <field name="budget_category_id" ref="budget_category_material"/>
+    </record>
+
+	  <record id="product_category_subcontractors" model="product.category" forcecreate="True">
+        <field name="name">Subcontractors</field>
+		  <field name="budget_category_id" ref="budget_category_subcontractors"/>
+    </record>
+
+	  <record id="product_category_miscellaneous" model="product.category" forcecreate="True">
+        <field name="name">Miscellaneous</field>
+		    <field name="budget_category_id" ref="budget_category_miscellaneous"/>
+    </record>
+</odoo>

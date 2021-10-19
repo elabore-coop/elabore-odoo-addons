@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+	<template id="report_project_budget">
+		<t t-call="web.html_container">
+			<t t-foreach="docs" t-as="o">
+				<t t-call="web.internal_layout">
+					<div class="page">
+						<div class="oe_structure"/>
+						<style>
+							body {
+								background-color: #fff;
+								font-family: "Arial", "Helvetica", sans-serif;
+								font-weight: normal;
+								font-style: normal;
+							}						
+						</style>
+						<h2 class="text-center">Budget: <span t-field="o.name" /></h2>
+						<table class="table table-sm o_main_table">
+							<thead>
+								<tr>
+									<th>Description</th>
+									<th>Unit of Measure</th>
+									<th class="text-right">Plan Price</th>
+									<th class="text-right">Actual Price</th>
+									<th class="text-right">Plan Quantity</th>
+									<th class="text-right">Actual Quantity</th>
+									<th class="text-right">Plan Amount</th>
+									<th class="text-right">Actual Amount</th>
+								</tr>
+							</thead>
+							<tbody>
+								<t t-set="total_plan_amount" t-value="0" />
+								<t t-set="total_actual_amount" t-value="0" />
+							
+								<t t-foreach="o.budget_category_ids" t-as="category">
+									<tr class="bg-200 font-weight-bold o_line_section">
+										<td colspan="99"><span t-field="category.name" /></td>
+									</tr>
+									<t t-set="plan_amount" t-value="0" />
+									<t t-set="actual_amount" t-value="0" />
+									<t t-foreach="o.budget_forecast_ids.filtered(lambda line : line.category_id == category)" t-as="line">
+										<t t-set="plan_amount" t-value="plan_amount + line.plan_amount" />
+										<t t-set="actual_amount" t-value="actual_amount + line.actual_amount" />									
+										<tr class="font-weight-bold" t-if="line.budget_level == 'section'">
+											<td colspan="99" id="section"><span t-field="line.name" /></td>
+										</tr>
+										<!--<tr class="font-italic o_line_note" t-elif="line.budget_level == 'note'">
+											<td colspan="99" id="note"><span t-field="line.name" /></td>
+										</tr>-->
+										<tr t-else="">
+											<td><span t-field="line.name" /></td>
+											<td><span t-field="line.product_uom_id" /></td>
+											<td class="text-right"><span t-field="line.plan_price" /></td>
+											<td class="text-right"><span t-field="line.actual_price" /></td>
+											<td class="text-right"><span t-field="line.plan_qty" /></td>
+											<td class="text-right"><span t-field="line.actual_qty" /></td>
+											<td class="text-right"><span t-field="line.plan_amount" /></td>
+											<td class="text-right"><span t-field="line.actual_amount" /></td>
+										</tr>
+									</t>
+									<t t-set="total_plan_amount" t-value="total_plan_amount + plan_amount" />
+									<t t-set="total_actual_amount" t-value="total_actual_amount + actual_amount" />
+									
+									<tr class="is-subtotal text-right font-weight-bold">
+										<td colspan="6">
+											<strong class="mr16">Subtotal</strong>
+										</td>
+										<td>
+		                                    <span
+		                                        t-esc="plan_amount"
+		                                        t-options='{"widget": "monetary", "display_currency": o.currency_id}'
+		                                    />
+										</td>
+										<td>
+		                                    <span
+		                                        t-esc="actual_amount"
+		                                        t-options='{"widget": "monetary", "display_currency": o.currency_id}'
+		                                    />
+											
+										</td>
+									</tr>
+								</t>
+							</tbody>
+							<thead>
+								<tr class="bg-200 text-right border-black font-weight-bold">
+									<td colspan="6">
+										<strong class="mr16">Total</strong>
+									</td>
+									<td>
+	                                    <span class="font-weight-bolder"
+	                                        t-esc="total_plan_amount"
+	                                        t-options='{"widget": "monetary", "display_currency": o.currency_id}'
+	                                    />
+									</td>
+									<td>
+	                                    <span
+	                                        t-esc="total_actual_amount"
+	                                        t-options='{"widget": "monetary", "display_currency": o.currency_id}'
+	                                    />
+										
+									</td>
+								</tr>								
+							
+							</thead>
+						</table>
+					</div>
+				</t>
+			</t>
+		</t>
+	</template>
+
+	<record id="act_report_project_budget" model="ir.actions.report">
+		<field name="model">account.analytic.account</field>
+		<field name="name">Budget</field>
+		<field name="report_type">qweb-pdf</field>
+		<field name="report_name">budget_forecast.report_project_budget</field>
+		<field name="report_file">budget_forecast.report_project_budget</field>
+		<field name="print_report_name">'Budget - %s' % (object.name)</field>
+		<field name="binding_model_id" ref="model_account_analytic_account" />
+		<field name="binding_type">report</field>
+	</record>
+
+</odoo>
