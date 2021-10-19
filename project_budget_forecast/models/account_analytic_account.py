@@ -14,7 +14,7 @@ class AccountAnalyticAccount(models.Model):
     @api.depends('budget_forecast_ids.plan_amount','budget_forecast_ids.actual_amount')
     def _calc_budget_amount(self):
         for record in self:
-            line_ids = record.mapped('budget_forecast_ids').filtered(lambda line : not line.budget_level)
+            line_ids = record.mapped('budget_forecast_ids').filtered(lambda line : (line.budget_level == "section"))
             record.plan_amount = sum(line_ids.mapped('plan_amount'))
             record.actual_amount = sum(line_ids.mapped('actual_amount'))
             
