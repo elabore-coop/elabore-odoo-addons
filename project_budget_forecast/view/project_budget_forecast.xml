@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="assets_backend" name="budget forecast assets" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <link rel="stylesheet" href="/project_budget_forecast/static/src/scss/section_category_and_note_backend.scss"/>
+            <script type="text/javascript" src="/project_budget_forecast/static/src/js/section_category_and_note_fields_backend.js"></script>
+        </xpath>
+    </template>
+</odoo>

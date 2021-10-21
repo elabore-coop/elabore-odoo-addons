@@ -18,15 +18,17 @@ _view_arch = """
 <data>
 <notebook> 
     <page name="%(name)s" string="%(name)s" >
-        <field name="%(field_name)s" widget="section_and_note_one2many" mode="tree" nolabel="1" context="{'default_category_id' : %(id)d}">
+        <field name="%(field_name)s" widget="section_category_and_note_one2many" mode="tree" nolabel="1" context="{'default_category_id' : %(id)d}">
             <tree editable="bottom">            
                 <control>
                     <create string="Add a section" context="{'default_budget_level': 'section'}" />
                     <create string="Add a category" context="{'default_budget_level': 'category'}" />
                     <create string="Add an article" context="{'default_budget_level': 'article'}" />
+                    <create string="Add an note" context="{'default_display_type': 'note'}" />
                 </control>                
                 <field name="category_id" invisible="1" />
                 <field name="budget_level" invisible="1" />
+                <field name="display_type" invisible="1" />
                 <field name="sequence" widget="handle" />                    
                 <field name="name" />
                 <field name="product_id" />
@@ -35,8 +37,8 @@ _view_arch = """
                 <field name="actual_price"/>
                 <field name="plan_qty"/>
                 <field name="actual_qty"/>
-                <field name="plan_amount" string="Plan Amount" sum="Total"/>
-                <field name="actual_amount" string="Actual Amount" sum="Total"/>                                    
+                <field name="plan_amount_display" string="Plan Amount" sum="Total"/>
+                <field name="actual_amount_display" string="Actual Amount" sum="Total"/>                                    
             </tree>
         </field>
     </page>

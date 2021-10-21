@@ -40,8 +40,8 @@
 									<t t-set="plan_amount" t-value="0" />
 									<t t-set="actual_amount" t-value="0" />
 									<t t-foreach="o.budget_forecast_ids.filtered(lambda line : line.category_id == category)" t-as="line">
-										<t t-set="plan_amount" t-value="plan_amount + line.plan_amount" />
-										<t t-set="actual_amount" t-value="actual_amount + line.actual_amount" />									
+										<t t-set="plan_amount" t-value="plan_amount + line.plan_amount_display" />
+										<t t-set="actual_amount" t-value="actual_amount + line.actual_amount_display" />									
 										<tr class="font-weight-bold" t-if="line.budget_level == 'section'">
 											<td colspan="99" id="section"><span t-field="line.name" /></td>
 										</tr>

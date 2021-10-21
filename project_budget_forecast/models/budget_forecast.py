@@ -11,7 +11,16 @@ class BudgetForecast(models.Model):
     category_id = fields.Many2one('budget.forecast.category', required = True)    
     category_code = fields.Char(related='category_id.code', store = True, readonly = True)
     
-    budget_level = fields.Selection([('section', 'Section'), ('category', 'Category'), ('article', 'Article')], default=False)    
+    budget_level = fields.Selection([('section', 'Section'), 
+                                     ('category', 'Category'), 
+                                     ('article', 'Article'), 
+                                     ('note', 'Note')], 
+                                     default=False)   
+    display_type = fields.Selection([('line_section', "Section"),
+                                     ('line_category', "Category"),
+                                     ('line_note', "Note")],
+                                     compute = '_calc_display_type',
+                                     help="Technical field for UX purpose.") 
     
 #    product_id = fields.Many2one('product.product', domain=[('budget_level', '=', budget_level)])
     product_id = fields.Many2one('product.product')
@@ -23,17 +32,27 @@ class BudgetForecast(models.Model):
     plan_qty = fields.Float('Plan Quantity')
     plan_price = fields.Monetary('Plan Price', group_operator='avg')
     plan_amount = fields.Monetary('Plan Amount', compute = '_calc_plan_amount', store=True)
-#    plan_amount_display = fields.Monetary(compute = '_calc_plan_amount_display')
+    plan_amount_display = fields.Monetary(compute = '_calc_plan_amount_display')
     
     analytic_line_ids = fields.Many2many('account.analytic.line', compute = '_calc_line_ids')
     actual_qty = fields.Float('Actual Quantity', compute = '_calc_actual', store=True, compute_sudo=True)
     actual_price = fields.Monetary('Actual Price', compute = '_calc_actual', store=True, compute_sudo=True, group_operator='avg')
     actual_amount = fields.Monetary('Actual Amount', compute = '_calc_actual', store=True, compute_sudo=True)
-#    actual_amount_display = fields.Monetary(compute = '_calc_actual_amount_display')
+    actual_amount_display = fields.Monetary(compute = '_calc_actual_amount_display')
     
     parent_id = fields.Many2one('budget.forecast', compute = '_calc_parent_id', store=True, compute_sudo=True)
     child_ids = fields.One2many('budget.forecast', 'parent_id')
     
+    @api.depends('budget_level')
+    def _calc_display_type(self):
+        for record in self:
+            if (record.budget_level == 'section') :
+                record.display_type = 'line_section'
+            elif (record.budget_level == 'category'):
+                record.display_type = 'line_category'
+            elif record.budget_level ==  'note':
+                record.display_type == 'line_note'
+
     @api.onchange('product_id')
     def _onchange_product_id(self):
         if self.product_id and not self.name:
@@ -49,21 +68,21 @@ class BudgetForecast(models.Model):
             else:
                 record.plan_amount = record.plan_qty * record.plan_price
     
-    # @api.depends('plan_amount', 'budget_level')
-    # def _calc_plan_amount_display(self):
-    #     for record in self:
-    #         if record.budget_level:
-    #             record.plan_amount_display=0
-    #         else:
-    #             record.plan_amount_display=record.plan_amount
+    @api.depends('plan_amount', 'budget_level')
+    def _calc_plan_amount_display(self):
+        for record in self:
+            if record.display_type == 'line_note':
+                record.plan_amount_display=0
+            else:
+                record.plan_amount_display=record.plan_amount
                 
-    # @api.depends('actual_amount', 'budget_level')
-    # def _calc_actual_amount_display(self):
-    #     for record in self:
-    #         if record.budget_level:
-    #             record.actual_amount_display=0
-    #         else:
-    #             record.actual_amount_display=record.actual_amount
+    @api.depends('actual_amount', 'budget_level')
+    def _calc_actual_amount_display(self):
+        for record in self:
+            if record.display_type == 'line_note':
+                record.actual_amount_display=0
+            else:
+                record.actual_amount_display=record.actual_amount
                 
                 
     
