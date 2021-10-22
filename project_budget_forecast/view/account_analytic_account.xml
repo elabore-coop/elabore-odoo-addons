@@ -10,7 +10,8 @@
 				<sheet string="Project Budget">
 					<group>
 						<group>
-							<field name="plan_amount"/>
+							<field name="plan_amount_without_coeff"/>
+							<field name="plan_amount_with_coeff"/>
 							<field name="actual_amount"/>
 						</group>
 						<group>
@@ -23,8 +24,17 @@
 								<tree>
 									<field name="category_id" />
 									<field name="name" />
-									<field name="plan_amount" sum="Total"/>
+									<field name="plan_amount_without_coeff" sum="Total"/>
+									<field name="plan_amount_with_coeff" sum="Total"/>
 									<field name="actual_amount" sum="Total"/>									
+								</tree>
+							</field>
+						</page>
+						<page name="coefficients" string="Coeff" attrs="{'invisible' : [('project_section_budget_ids', '=', False)]}">
+							<field name="budget_coefficients_ids" nolabel="1">
+								<tree>
+									<field name="name" />
+									<field name="coeff" sum="Total"/>								
 								</tree>
 							</field>
 						</page>
@@ -41,7 +51,7 @@
 		<field name="arch" type="xml">
 			<div name="button_box">
 				<button type="object" name="action_budget_forecast" class="oe_stat_button" icon="fa-usd">
-					<field name="plan_amount" widget="statinfo" string="Budget" />
+					<field name="plan_amount_with_coeff" widget="statinfo" string="Budget" />
 				</button>
 			</div>
 		</field>

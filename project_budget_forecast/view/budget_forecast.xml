@@ -28,7 +28,8 @@
 							<field name="actual_qty"/>											
 						</group>
 						<group>
-							<field name="plan_amount" />
+							<field name="plan_amount_without_coeff" />
+							<field name="plan_amount_with_coeff" />
 							<field name="actual_amount"/>  
 						</group>
 					</group>
@@ -53,11 +54,13 @@
 				<field name="name" />
 				<field name="product_id" />
 				<field name="product_uom_id" />		
-				<field name="plan_amount" sum="total"/>
+				<field name="plan_amount_without_coeff" sum="total"/>
+				<field name="plan_amount_with_coeff" sum="total"/>
 				<field name="actual_price" sum="total"/>		
 				<field name="plan_qty" sum="total"/>
 				<field name="actual_qty" sum="total"/>
-				<field name="plan_amount" sum="total" />
+				<field name="plan_amount_without_coeff" sum="total"/>
+				<field name="plan_amount_with_coeff" sum="total"/>
 				<field name="actual_amount" sum="total"/>  						
 			</tree>
 		</field>

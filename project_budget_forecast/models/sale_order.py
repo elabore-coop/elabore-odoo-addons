@@ -1,10 +1,12 @@
+# -*- coding: utf-8 -*-
+
 from odoo import models, fields, _, api
 from odoo.exceptions import Warning
 
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
     
-    plan_amount = fields.Float(related='analytic_account_id.plan_amount')
+    plan_amount_with_coeff = fields.Float(related='analytic_account_id.plan_amount_with_coeff')
     
     
     def action_budget_forecast(self):

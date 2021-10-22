@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from odoo import models, fields, api
 
 class BudgetForecast(models.Model):
@@ -19,7 +21,6 @@ class BudgetForecast(models.Model):
     display_type = fields.Selection([('line_section', "Section"),
                                      ('line_category', "Category"),
                                      ('line_note', "Note")],
-                                     compute = '_calc_display_type',
                                      help="Technical field for UX purpose.") 
     
 #    product_id = fields.Many2one('product.product', domain=[('budget_level', '=', budget_level)])
@@ -31,27 +32,17 @@ class BudgetForecast(models.Model):
         
     plan_qty = fields.Float('Plan Quantity')
     plan_price = fields.Monetary('Plan Price', group_operator='avg')
-    plan_amount = fields.Monetary('Plan Amount', compute = '_calc_plan_amount', store=True)
-    plan_amount_display = fields.Monetary(compute = '_calc_plan_amount_display')
+    plan_amount_without_coeff = fields.Monetary('Plan Amount', compute = '_calc_plan_amount_without_coeff', store=True)
+    plan_amount_with_coeff = fields.Monetary('Plan Amount with coeff', compute = '_calc_plan_amount_with_coeff', store=True)
+    plan_amount_display = fields.Monetary('Plan Amount with coeff', store=True)
     
     analytic_line_ids = fields.Many2many('account.analytic.line', compute = '_calc_line_ids')
     actual_qty = fields.Float('Actual Quantity', compute = '_calc_actual', store=True, compute_sudo=True)
     actual_price = fields.Monetary('Actual Price', compute = '_calc_actual', store=True, compute_sudo=True, group_operator='avg')
     actual_amount = fields.Monetary('Actual Amount', compute = '_calc_actual', store=True, compute_sudo=True)
-    actual_amount_display = fields.Monetary(compute = '_calc_actual_amount_display')
-    
+    actual_amount_display = fields.Monetary('Plan Amount with coeff', store=True)
     parent_id = fields.Many2one('budget.forecast', compute = '_calc_parent_id', store=True, compute_sudo=True)
     child_ids = fields.One2many('budget.forecast', 'parent_id')
-    
-    @api.depends('budget_level')
-    def _calc_display_type(self):
-        for record in self:
-            if (record.budget_level == 'section') :
-                record.display_type = 'line_section'
-            elif (record.budget_level == 'category'):
-                record.display_type = 'line_category'
-            elif record.budget_level ==  'note':
-                record.display_type == 'line_note'
 
     @api.onchange('product_id')
     def _onchange_product_id(self):
@@ -61,38 +52,24 @@ class BudgetForecast(models.Model):
         self.plan_price = self.product_id.standard_price
     
     @api.depends('plan_qty', 'plan_price', 'child_ids')
-    def _calc_plan_amount(self):
+    def _calc_plan_amount_without_coeff(self):
         for record in self:
             if record.child_ids:
-                record.plan_amount = sum(record.mapped('child_ids.plan_amount'))
+                record.plan_amount_without_coeff = sum(record.mapped('child_ids.plan_amount_without_coeff'))
             else:
-                record.plan_amount = record.plan_qty * record.plan_price
-    
-    @api.depends('plan_amount', 'budget_level')
-    def _calc_plan_amount_display(self):
+                record.plan_amount_without_coeff = record.plan_qty * record.plan_price
+
+    @api.depends('plan_qty', 'plan_price', 'child_ids')
+    def _calc_plan_amount_with_coeff(self):
         for record in self:
-            if record.display_type == 'line_note':
-                record.plan_amount_display=0
-            else:
-                record.plan_amount_display=record.plan_amount
-                
-    @api.depends('actual_amount', 'budget_level')
-    def _calc_actual_amount_display(self):
-        for record in self:
-            if record.display_type == 'line_note':
-                record.actual_amount_display=0
-            else:
-                record.actual_amount_display=record.actual_amount
-                
-                
-    
+            record.plan_amount_with_coeff = record.plan_amount_without_coeff * (1 + record.analytic_id.global_coeff)
+
     @api.depends('child_ids')
     def _calc_plan_qty(self):
         for record in self:
             if record.child_ids:
                 record.plan_qty = sum(record.mapped('child_ids.plan_qty'))
-            
-            
+
     @api.depends('child_ids')
     def _calc_plan_price(self):
         for record in self:
@@ -100,10 +77,10 @@ class BudgetForecast(models.Model):
                 lst = record.mapped('child_ids.plan_price')
                 record.plan_price = lst and sum(lst) / len(lst)            
     
-    @api.depends('analytic_id.budget_forecast_ids')
+    @api.depends('analytic_id.budget_forecast_ids', 'child_ids', 'plan_qty', 'plan_price', 'analytic_id.global_coeff')
     def _calc_parent_id(self):
         for record in self:
-            if record.budget_level == 'section':
+            if record.display_type == 'line_section':
                 record.parent_id = False
                 continue
             found = False
@@ -114,15 +91,15 @@ class BudgetForecast(models.Model):
                 if line==record:
                     found = True
                     continue
-                if line.budget_level == 'article':
+                if (line.display_type == 'line_article') or (line.display_type == 'line_note'):
                     continue
-                elif line.budget_level == 'category':
-                    if record.budget_level == 'article':
+                elif line.display_type == 'line_category':
+                    if record.display_type == 'line_article':
                         parent_id = line
                         break
                     else:
                         continue
-                elif line.budget_level == 'section':
+                elif line.display_type == 'line_section':
                     parent_id = line
                     break          
             record.parent_id = parent_id
@@ -150,11 +127,11 @@ class BudgetForecast(models.Model):
             record.actual_price = abs(record.actual_qty and record.actual_amount / record.actual_qty)
     
     def _calc_plan(self):
-        self._calc_plan_amount()
+        self._calc_plan_amount_without_coeff()
+        self._calc_plan_amount_with_coeff()
         self._calc_plan_qty()
         self._calc_plan_price()                    
-    
-    
+
     def _update_parent_plan(self):
         self.exists().mapped('parent_id')._calc_plan()
                         
@@ -164,15 +141,12 @@ class BudgetForecast(models.Model):
         records = super(BudgetForecast, self).create(vals_list)
         records._update_parent_plan()
         return records
-    
-    
+
     def write(self, vals):
         res= super(BudgetForecast, self).write(vals)
         self._update_parent_plan()
         return res
-    
-    
-    
+
     def unlink(self):
         parent_ids = self.mapped('parent_id')
         

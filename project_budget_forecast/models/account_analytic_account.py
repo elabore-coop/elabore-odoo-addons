@@ -1,23 +1,34 @@
+# -*- coding: utf-8 -*-
+
 from odoo import models, fields, api, _
 
 class AccountAnalyticAccount(models.Model):
     _inherit = 'account.analytic.account'
     
     budget_forecast_ids = fields.One2many('budget.forecast', 'analytic_id', copy = True)
-    project_section_budget_ids = fields.One2many('budget.forecast', 'analytic_id', domain = [('budget_level','=', 'section')], copy = False)
-        
-    plan_amount = fields.Float('Plan Amount', compute = '_calc_budget_amount')
+    project_section_budget_ids = fields.One2many('budget.forecast', 'analytic_id', domain = [('display_type','=', 'line_section')], copy = False)
+    budget_coefficients_ids = fields.One2many('budget.coefficient', 'budget_forecast', copy=True)
+    global_coeff = fields.Float('Global coefficient', compute = '_calc_global_coeff')
+    plan_amount_without_coeff = fields.Float('Plan Amount without coeff', compute = '_calc_budget_amount')
+    plan_amount_with_coeff = fields.Float('Plan Amount with coeff', compute = '_calc_budget_amount')
     actual_amount = fields.Float('Actual Amount', compute = '_calc_budget_amount')
     
     budget_category_ids = fields.Many2many('budget.forecast.category', compute = '_calc_budget_category_ids')
     
-    @api.depends('budget_forecast_ids.plan_amount','budget_forecast_ids.actual_amount')
+    @api.depends('budget_forecast_ids.plan_amount_without_coeff','budget_forecast_ids.plan_amount_with_coeff','budget_forecast_ids.actual_amount')
     def _calc_budget_amount(self):
         for record in self:
-            line_ids = record.mapped('budget_forecast_ids').filtered(lambda line : (line.budget_level == "section"))
-            record.plan_amount = sum(line_ids.mapped('plan_amount'))
+            line_ids = record.mapped('budget_forecast_ids').filtered(lambda line : (line.display_type == "line_section"))
+            record.plan_amount_without_coeff = sum(line_ids.mapped('plan_amount_without_coeff'))
+            record.plan_amount_with_coeff = sum(line_ids.mapped('plan_amount_with_coeff'))
             record.actual_amount = sum(line_ids.mapped('actual_amount'))
-            
+
+    def _calc_global_coeff(self):
+        for record in self:
+            line_ids = record.mapped('budget_coefficients_ids')
+            record.global_coeff = sum(line_ids.mapped('coeff'))
+
+
     
     @api.depends('budget_forecast_ids')
     def _calc_budget_category_ids(self):
