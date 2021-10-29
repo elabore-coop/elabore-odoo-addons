@@ -66,6 +66,3 @@ class AccountAnalyticAccount(models.Model):
                 record.display_actual_amounts = False
             else:
                 record.display_actual_amounts = True
-            
-            # for line in record.budget_forecast_ids:
-            #     line.display_actual_amounts = record.display_actual_amounts

@@ -16,7 +16,6 @@ class BudgetForecast(models.Model):
                                      ('line_article', "Article"),
                                      ('line_note', "Note")],
                                      help="Technical field for UX purpose.") 
-    display_actual_amounts = fields.Boolean(string='Display Actual Amounts')
 
     product_id = fields.Many2one('product.product')
     product_uom_id = fields.Many2one('uom.uom', string='Unit of Measure')    
@@ -44,11 +43,6 @@ class BudgetForecast(models.Model):
             self.description = self.product_id.name
         self.product_uom_id = self.product_id.uom_id
         self.plan_price = self.product_id.standard_price
-
-    @api.depends('analytic_id.display_actual_amounts')
-    def _calc_display_actual_amounts(self):
-        for record in self:
-            record.display_actual_amounts = record.analytic_id.display_actual_amounts
 
     @api.depends('plan_qty', 'plan_price', 'child_ids')
     def _calc_plan_amount_without_coeff(self):
