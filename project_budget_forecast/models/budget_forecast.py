@@ -6,7 +6,7 @@ class BudgetForecast(models.Model):
     _name = 'budget.forecast'
     _description = _name
     
-    name = fields.Char('Description')    
+    description = fields.Char('Description')    
     sequence = fields.Integer()
     analytic_id = fields.Many2one('account.analytic.account', 'Analytic Account', required=True, ondelete='restrict', index=True)    
     main_category = fields.Many2one('budget.forecast.category', help='Technical field for budget_forecast_category fields creation', ondelete='restrict')
@@ -40,8 +40,8 @@ class BudgetForecast(models.Model):
 
     @api.onchange('product_id')
     def _onchange_product_id(self):
-        if self.product_id and not self.name:
-            self.name = self.product_id.name
+        if self.product_id and not self.description:
+            self.description = self.product_id.name
         self.product_uom_id = self.product_id.uom_id
         self.plan_price = self.product_id.standard_price
 

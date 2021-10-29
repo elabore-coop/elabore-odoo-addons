@@ -23,14 +23,12 @@ var SectionCategoryAndNoteListRenderer = ListRenderer.extend({
     _renderBodyCell: function (record, node, index, options) {
         var $cell = this._super.apply(this, arguments);
 
-        // var isSection = record.data.display_type === 'line_section';
-        // var isSubSection = record.data.display_type === 'line_subsection';
         var isNote = record.data.display_type === 'line_note';
 
         if (isNote) {
             if (node.attrs.widget === "handle") {
                 return $cell;
-            } else if (node.attrs.name === "name") {
+            } else if (node.attrs.name === "description") {
                 var nbrColumns = this._getNumberOfCols();
                 if (this.handleField) {
                     nbrColumns--;
@@ -70,7 +68,15 @@ var SectionCategoryAndNoteListRenderer = ListRenderer.extend({
     _renderView: function () {
         var def = this._super();
         this.$el.find('> table').addClass('o_section_category_and_note_list_view');
+        this.$el.find('> table').removeClass('table-striped');
         return def;
+    },
+    _renderView: function () {
+        var self = this;
+        return this._super.apply(this, arguments).then(function () {
+            self.$('.o_list_table').addClass('o_section_category_and_note_list_view');
+            self.$('.o_list_table').removeClass('table-striped');
+        });
     },
     /**
      * Add support for product configurator
@@ -206,16 +212,6 @@ var SectionCategoryAndNoteFieldOne2Many = FieldOne2Many.extend({
     },
 });
 
-// // This is a merge between a FieldText and a FieldChar.
-// // We want a FieldChar for section,
-// // and a FieldText for the rest (product and note).
-// var SectionAndNoteFieldText = function (parent, name, record, options) {
-//     var isSection = record.data.display_type === 'line_section';
-//     var Constructor = isSection ? FieldChar : FieldText;
-//     return new Constructor(parent, name, record, options);
-// };
-
 fieldRegistry.add('section_category_and_note_one2many', SectionCategoryAndNoteFieldOne2Many);
-// fieldRegistry.add('section_and_note_text', SectionAndNoteFieldText);
 
 });

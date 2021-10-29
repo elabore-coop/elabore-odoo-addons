@@ -29,7 +29,7 @@
 							<field name="project_section_budget_ids" nolabel="1" readonly = "1">
 								<tree>
 									<field name="display_actual_amounts" invisible="1"/>
-									<field name="name" />
+									<field name="product_id" />
 									<field name="plan_amount_without_coeff" sum="Total"/>
 									<field name="plan_amount_with_coeff" sum="Total"/>
 									<field name="actual_amount" sum="Total" attrs="{'invisible' : [('display_actual_amounts', '=', False)]}"/>									

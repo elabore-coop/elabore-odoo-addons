@@ -32,8 +32,8 @@ _view_arch = """
                 <field name="main_category" invisible="1" />
                 <field name="display_type" invisible="1" />
                 <field name="display_actual_amounts" invisible="1" />                   
-                <field name="name"  invisible="1"/>
                 <field name="product_id" />
+                <field name="description" />
                 <field name="product_uom_id" invisible="1"/>
                 <field name="plan_price"/>
                 <field name="actual_price" attrs="{'invisible' : [('display_actual_amounts', '=', False)]}"/>

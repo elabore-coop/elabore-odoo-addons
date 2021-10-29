@@ -3,28 +3,20 @@
 // section, category and note on budget forecast.
 
 tr.o_data_row.o_is_budget_line_note,
-tr.o_data_row.o_is_budget_line_note textarea[name="name"],
+tr.o_data_row.o_is_budget_line_note textarea[name="description"],
 div.oe_kanban_card.o_is_budget_line_note {
     font-style: italic;
 }
 tr.o_data_row.o_is_budget_line_section,
 div.oe_kanban_card.o_is_budget_line_section {
     font-weight: bold;   
-    // background-color: #838282;
+    background-color: #b59898;
 }
-// tr.o_data_row.o_is_line_section {
-//     border-top: 1px solid #000000;
-//     border-bottom: 1px solid #000000;
-// }
 tr.o_data_row.o_is_budget_line_subsection,
 div.oe_kanban_card.o_is_budget_line_subsection {
     font-style: italic;
-    // background-color: #eaeaea;
+    background-color: #dbd1d1;
 }
-// tr.o_data_row.o_is_line_subsection {
-//     border-top: 1px solid #BBB;
-//     border-bottom: 1px solid #BBB;
-// }
 tr.o_data_row.o_is_budget_line_note {
     word-break: break-all;
 }

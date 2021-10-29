@@ -20,7 +20,7 @@ class AccountAnalyticLine(models.Model):
         for record in records:
             if record.amount < 0 and record.product_id.budget_category_id and not BudgetForecast.search([('analytic_id', '=', record.account_id.id), ('product_id', '=', record.product_id.id)], limit =1):
                 BudgetForecast.create({
-                    'name' : record.product_id.name,
+                    'description' : record.product_id.name,
                     'analytic_id' : record.account_id.id,
                     'product_id' : record.product_id.id,
                     'main_category' : record.product_id.budget_category_id.id,
