@@ -24,7 +24,7 @@ var SectionCategoryAndNoteListRenderer = ListRenderer.extend({
         var $cell = this._super.apply(this, arguments);
 
         // var isSection = record.data.display_type === 'line_section';
-        // var isCategory = record.data.display_type === 'line_category';
+        // var isSubSection = record.data.display_type === 'line_subsection';
         var isNote = record.data.display_type === 'line_note';
 
         if (isNote) {

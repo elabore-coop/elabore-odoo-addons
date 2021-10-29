@@ -8,11 +8,17 @@
 		<field name="arch" type="xml">
 			<form string="Project Budget" create="false" delete="false">
 				<sheet string="Project Budget">
+					<div class="oe_button_box" name="button_box">
+						<button type="object" class="oe_stat_button" icon="fa-eye" name="displayActualAmounts" string="Display Actual amounts" >
+							<field name="display_actual_amounts" widget="boolean_toggle" 
+								   options="{'terminology': {'string_true': 'Displayed', 'hover_true': 'Hide', 'string_false': 'Hidden', 'hover_false': 'Display'}}"/>
+						</button>
+					</div>
 					<group>
 						<group>
 							<field name="plan_amount_without_coeff"/>
 							<field name="plan_amount_with_coeff"/>
-							<field name="actual_amount"/>
+							<field name="actual_amount" attrs="{'invisible' : [('display_actual_amounts', '=', False)]}"/>
 						</group>
 						<group>
 						
@@ -22,11 +28,11 @@
 						<page name="summary" string="Summary" attrs="{'invisible' : [('project_section_budget_ids', '=', False)]}">
 							<field name="project_section_budget_ids" nolabel="1" readonly = "1">
 								<tree>
-									<field name="category_id" />
+									<field name="display_actual_amounts" invisible="1"/>
 									<field name="name" />
 									<field name="plan_amount_without_coeff" sum="Total"/>
 									<field name="plan_amount_with_coeff" sum="Total"/>
-									<field name="actual_amount" sum="Total"/>									
+									<field name="actual_amount" sum="Total" attrs="{'invisible' : [('display_actual_amounts', '=', False)]}"/>									
 								</tree>
 							</field>
 						</page>

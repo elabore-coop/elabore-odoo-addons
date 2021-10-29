@@ -20,27 +20,28 @@ _view_arch = """
 <data>
 <notebook> 
     <page name="%(name)s" string="%(name)s" >
-        <field name="%(field_name)s" widget="section_category_and_note_one2many" mode="tree" nolabel="1" context="{'default_category_id' : %(id)d}">
+        <field name="%(field_name)s" widget="section_category_and_note_one2many" mode="tree" nolabel="1">
             <tree editable="bottom">            
                 <control>
-                    <create string="Add a section" context="{'default_budget_level': 'line_section'}" />
-                    <create string="Add a category" context="{'default_budget_level': 'line_category'}" />
-                    <create string="Add an article" context="{'default_budget_level': 'line_article'}" />
-                    <create string="Add a note" context="{'default_display_type': 'line_note'}" />
+                    <create string="Add a section" context="{'default_display_type': 'line_section'}" />
+                    <create string="Add a sub-section" context="{'default_display_type': 'line_subsection'}" />
+                    <create string="Add an article" context="{'default_display_type': 'line_article', 'default_main_category' : %(id)d}" />
+                    <create string="Add a note" context="{'default_display_type': 'line_note', 'default_main_category' : %(id)d}" />
                 </control>                
-                <field name="category_id" invisible="1" />
+                <field name="sequence" widget="handle" />  
+                <field name="main_category" invisible="1" />
                 <field name="display_type" invisible="1" />
-                <field name="sequence" widget="handle" />                    
-                <field name="name" />
+                <field name="display_actual_amounts" invisible="1" />                   
+                <field name="name"  invisible="1"/>
                 <field name="product_id" />
-                <field name="product_uom_id" />
+                <field name="product_uom_id" invisible="1"/>
                 <field name="plan_price"/>
-                <field name="actual_price"/>
+                <field name="actual_price" attrs="{'invisible' : [('display_actual_amounts', '=', False)]}"/>
                 <field name="plan_qty"/>
-                <field name="actual_qty"/>
+                <field name="actual_qty" attrs="{'invisible' : [('display_actual_amounts', '=', False)]}"/>
                 <field name="plan_amount_without_coeff" string="Plan Amount before Coeff" sum="Total"/>
                 <field name="plan_amount_with_coeff" string="Plan Amount after Coeff" sum="Total"/>
-                <field name="actual_amount" string="Actual Amount" sum="Total"/>                                    
+                <field name="actual_amount" string="Actual Amount" sum="Total" attrs="{'invisible' : [('display_actual_amounts', '=', False)]}"/>                                    
             </tree>
         </field>
     </page>
@@ -65,7 +66,7 @@ class BudgetForecastCategory(models.Model):
         ('uk_name', 'unique(name)', 'Name must be unique!'),
         ('uk_code', 'unique(code)', 'Code must be unique!')
         ]
-        
+
     
     def _create_field(self):
         if self.field_id:
@@ -80,7 +81,7 @@ class BudgetForecastCategory(models.Model):
             'ttype':'one2many',
             'relation':'budget.forecast',
             'relation_field': 'analytic_id',
-            'domain': "[('category_id.code','=','%s')]" %(self.code),
+            'domain': "['|',('main_category.code','=','%s'),('display_type','in',['line_section','line_subsection'])]" %(self.code),
             'copied' : False                      
             }
         self.field_id=self.env['ir.model.fields'].create(vals)

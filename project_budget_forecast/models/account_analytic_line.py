@@ -23,7 +23,7 @@ class AccountAnalyticLine(models.Model):
                     'name' : record.product_id.name,
                     'analytic_id' : record.account_id.id,
                     'product_id' : record.product_id.id,
-                    'category_id' : record.product_id.budget_category_id.id,
+                    'main_category' : record.product_id.budget_category_id.id,
                     'product_uom_id' : self.product_id.uom_id,
                     'plan_price' : self.product_id.standard_price,
                     'sequence' : 9999

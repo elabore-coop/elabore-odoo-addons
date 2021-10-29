@@ -5,25 +5,19 @@ from odoo import models, fields, api
 class BudgetForecast(models.Model):
     _name = 'budget.forecast'
     _description = _name
-    _order = 'category_code,sequence,id'
     
-    name = fields.Char('Description', required=True)    
+    name = fields.Char('Description')    
     sequence = fields.Integer()
     analytic_id = fields.Many2one('account.analytic.account', 'Analytic Account', required=True, ondelete='restrict', index=True)    
-    category_id = fields.Many2one('budget.forecast.category', required = True)    
-    category_code = fields.Char(related='category_id.code', store = True, readonly = True)
+    main_category = fields.Many2one('budget.forecast.category', help='Technical field for budget_forecast_category fields creation', ondelete='restrict')
     
-    budget_level = fields.Selection([('section', 'Section'), 
-                                     ('category', 'Category'), 
-                                     ('article', 'Article'), 
-                                     ('note', 'Note')], 
-                                     default=False)   
     display_type = fields.Selection([('line_section', "Section"),
-                                     ('line_category', "Category"),
+                                     ('line_subsection', "Sub-Section"),
+                                     ('line_article', "Article"),
                                      ('line_note', "Note")],
                                      help="Technical field for UX purpose.") 
-    
-#    product_id = fields.Many2one('product.product', domain=[('budget_level', '=', budget_level)])
+    display_actual_amounts = fields.Boolean(string='Display Actual Amounts')
+
     product_id = fields.Many2one('product.product')
     product_uom_id = fields.Many2one('uom.uom', string='Unit of Measure')    
     
@@ -41,7 +35,7 @@ class BudgetForecast(models.Model):
     actual_price = fields.Monetary('Actual Price', compute = '_calc_actual', store=True, compute_sudo=True, group_operator='avg')
     actual_amount = fields.Monetary('Actual Amount', compute = '_calc_actual', store=True, compute_sudo=True)
     actual_amount_display = fields.Monetary('Plan Amount with coeff', store=True)
-    parent_id = fields.Many2one('budget.forecast', compute = '_calc_parent_id', store=True, compute_sudo=True)
+    parent_id = fields.Many2one('budget.forecast', store=True , compute_sudo=True, compute = '_calc_parent_id' )
     child_ids = fields.One2many('budget.forecast', 'parent_id')
 
     @api.onchange('product_id')
@@ -50,7 +44,12 @@ class BudgetForecast(models.Model):
             self.name = self.product_id.name
         self.product_uom_id = self.product_id.uom_id
         self.plan_price = self.product_id.standard_price
-    
+
+    @api.depends('analytic_id.display_actual_amounts')
+    def _calc_display_actual_amounts(self):
+        for record in self:
+            record.display_actual_amounts = record.analytic_id.display_actual_amounts
+
     @api.depends('plan_qty', 'plan_price', 'child_ids')
     def _calc_plan_amount_without_coeff(self):
         for record in self:
@@ -77,15 +76,19 @@ class BudgetForecast(models.Model):
                 lst = record.mapped('child_ids.plan_price')
                 record.plan_price = lst and sum(lst) / len(lst)            
     
-    @api.depends('analytic_id.budget_forecast_ids', 'child_ids', 'plan_qty', 'plan_price', 'analytic_id.global_coeff')
+    @api.depends('analytic_id.budget_forecast_ids', 'sequence', 'parent_id')
     def _calc_parent_id(self):
         for record in self:
             if record.display_type == 'line_section':
+                # A Section is the top of the line hierarchy => no parent
                 record.parent_id = False
                 continue
             found = False
             parent_id = False
-            for line in record.analytic_id.budget_forecast_ids.sorted(reverse = True):
+            for line in record.analytic_id.budget_forecast_ids.search(['|',
+                                                                            ('main_category', '=', record.main_category.id),
+                                                                            ('display_type', 'in', ['line_section', 'line_subsection'])]
+                                                                     ).sorted(key=lambda r: r.sequence, reverse = True):
                 if not found and line != record:
                     continue
                 if line==record:
@@ -93,7 +96,7 @@ class BudgetForecast(models.Model):
                     continue
                 if (line.display_type == 'line_article') or (line.display_type == 'line_note'):
                     continue
-                elif line.display_type == 'line_category':
+                elif line.display_type == 'line_subsection':
                     if record.display_type == 'line_article':
                         parent_id = line
                         break

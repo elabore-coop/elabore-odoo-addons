@@ -15,6 +15,9 @@ class AccountAnalyticAccount(models.Model):
     
     budget_category_ids = fields.Many2many('budget.forecast.category', compute = '_calc_budget_category_ids')
     
+    display_actual_amounts = fields.Boolean(string='Display Actual Amounts', default=False)
+
+
     @api.depends('budget_forecast_ids.plan_amount_without_coeff','budget_forecast_ids.plan_amount_with_coeff','budget_forecast_ids.actual_amount')
     def _calc_budget_amount(self):
         for record in self:
@@ -33,7 +36,7 @@ class AccountAnalyticAccount(models.Model):
     @api.depends('budget_forecast_ids')
     def _calc_budget_category_ids(self):
         for record in self:
-            record.budget_category_ids = record.mapped("budget_forecast_ids.category_id").sorted()
+            record.budget_category_ids = self.env['budget.forecast.category'].search([]).sorted()
     
     def action_budget_forecast(self):
         return {
@@ -47,10 +50,8 @@ class AccountAnalyticAccount(models.Model):
             'context' : {
                 'budget_forecast' : True
                 }    
-            }            
-        
-        
-    
+            }
+
     def name_get(self):
         if self._context.get('budget_forecast'):
             res = []
@@ -58,3 +59,13 @@ class AccountAnalyticAccount(models.Model):
                 res.append((analytic.id, _('Budget')))
             return res
         return super(AccountAnalyticAccount, self).name_get()
+
+    def displayActualAmounts(self):
+        for record in self:
+            if record.display_actual_amounts:
+                record.display_actual_amounts = False
+            else:
+                record.display_actual_amounts = True
+            
+            # for line in record.budget_forecast_ids:
+            #     line.display_actual_amounts = record.display_actual_amounts

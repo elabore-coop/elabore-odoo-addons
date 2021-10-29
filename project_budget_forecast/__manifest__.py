@@ -60,6 +60,7 @@ This module is maintained by ELABORE.
     'depends': [
         'analytic',
         'base',
+        'crm',
         'hr',
         'hr_timesheet',
         'product',
@@ -83,12 +84,12 @@ This module is maintained by ELABORE.
         'view/product_category.xml',
         'view/product_template_form.xml',
         'view/actions.xml',
-        'view/project_budget_forecast.xml',
+        'view/assets.xml',
         'view/menu.xml',
+        'view/crm_lead.xml',
         'data/budget_forecast_category.xml',
         'data/product_category.xml',
         'data/function.xml',
-        'report/report.xml'
     ],
     # only loaded in demonstration mode
     'demo': [
