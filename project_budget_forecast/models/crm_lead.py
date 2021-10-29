@@ -10,5 +10,13 @@ class Lead(models.Model):
     
     def action_budget_forecast(self):
         if not self.analytic_account:
-            raise Warning(_('Please set the analytic account'))
+            message_id = self.env['budget.forecast.message.wizard'].create({'message': 'You must add an analytic account to build/access the budget forecast screen.'})
+            return {
+                'name': 'Missing Analytic Account',
+                'type': 'ir.actions.act_window',
+                'view_mode': 'form',
+                'res_model': 'budget.forecast.message.wizard',
+                'res_id': message_id.id,
+                'target': 'new'
+            }
         return self.analytic_account.action_budget_forecast()
