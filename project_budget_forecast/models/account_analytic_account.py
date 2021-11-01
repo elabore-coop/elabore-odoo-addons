@@ -16,7 +16,8 @@ class AccountAnalyticAccount(models.Model):
     budget_category_ids = fields.Many2many('budget.forecast.category', compute = '_calc_budget_category_ids')
     
     display_actual_amounts = fields.Boolean(string='Display Actual Amounts', default=False)
-
+    project_managers = fields.Many2many('res.users', string="Project managers",
+                                        domain=lambda self: [('groups_id', 'in', self.env.ref('base.group_user').id)])
 
     @api.depends('budget_forecast_ids.plan_amount_without_coeff','budget_forecast_ids.plan_amount_with_coeff','budget_forecast_ids.actual_amount')
     def _calc_budget_amount(self):
@@ -39,6 +40,18 @@ class AccountAnalyticAccount(models.Model):
             record.budget_category_ids = self.env['budget.forecast.category'].search([]).sorted()
     
     def action_budget_forecast(self):
+        # Access only if the connected user is the project manager or an Odoo administrator
+        if not (self.env.uid in self.project_managers.ids
+                or self.env.user.has_group('base.group_system')):
+            message_id = self.env['budget.forecast.message.wizard'].create({'message': 'You are not manager of this project.\nPlease contact the project manager or your Odoo administrator.'})
+            return {
+                'name': 'You are not the Project Manager',
+                'type': 'ir.actions.act_window',
+                'view_mode': 'form',
+                'res_model': 'budget.forecast.message.wizard',
+                'res_id': message_id.id,
+                'target': 'new'
+            }
         return {
             'type' : 'ir.actions.act_window',
             'name' : _('Budget'),

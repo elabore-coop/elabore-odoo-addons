@@ -27,7 +27,7 @@
 							<field name="actual_amount" attrs="{'invisible' : [('display_actual_amounts', '=', False)]}"/>
 						</group>
 						<group>
-						
+							<field name="project_managers" widget="many2many_tags"/>
 						</group>
 					</group>
 					<notebook>
@@ -72,6 +72,9 @@
 					<field name="plan_amount_with_coeff" widget="statinfo" string="Budget" />
 				</button>
 			</div>
+			<xpath expr="//field[@name='company_id']" position="after">
+				<field name="project_managers" widget="many2many_tags"/> 
+			</xpath>
 		</field>
 	</record>
 		
