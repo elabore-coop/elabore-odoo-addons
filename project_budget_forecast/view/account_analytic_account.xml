@@ -45,6 +45,13 @@
 						</page>
 					</notebook>
 				</sheet>
+				<!-- Attachment preview -->
+				<div class="o_attachment_preview"/>
+				<!-- Chatter -->
+				<div class="oe_chatter">
+					<field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+					<field name="message_ids" widget="mail_thread"/>
+				</div>
 			</form>
 		</field>
 	</record>
