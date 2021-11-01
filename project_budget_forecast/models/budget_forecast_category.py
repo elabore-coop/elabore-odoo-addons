@@ -38,9 +38,9 @@ _view_arch = """
                 <field name="actual_price" attrs="{'column_invisible' : [('parent.display_actual_amounts', '=', False)]}"/>
                 <field name="plan_qty"/>
                 <field name="actual_qty" attrs="{'column_invisible' : [('parent.display_actual_amounts', '=', False)]}"/>
-                <field name="plan_amount_without_coeff" string="Plan Amount before Coeff" sum="Total"/>
-                <field name="plan_amount_with_coeff" string="Plan Amount after Coeff" sum="Total"/>
-                <field name="actual_amount" string="Actual Amount" sum="Total" attrs="{'column_invisible' : [('parent.display_actual_amounts', '=', False)]}"/>                                    
+                <field name="plan_amount_without_coeff" string="Plan Amount before Coeff"/>
+                <field name="plan_amount_with_coeff" string="Plan Amount after Coeff"/>
+                <field name="actual_amount" string="Actual Amount" attrs="{'column_invisible' : [('parent.display_actual_amounts', '=', False)]}"/>                                    
             </tree>
         </field>
     </page>
