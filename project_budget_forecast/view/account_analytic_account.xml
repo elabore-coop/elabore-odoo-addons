@@ -7,13 +7,19 @@
 		<field name="priority">100</field>
 		<field name="arch" type="xml">
 			<form string="Project Budget" create="false" delete="false">
-				<sheet string="Project Budget">
-					<div class="oe_button_box" name="button_box">
-						<button type="object" class="oe_stat_button" icon="fa-eye" name="displayActualAmounts" string="Display Actual amounts" >
-							<field name="display_actual_amounts" widget="boolean_toggle" 
-								   options="{'terminology': {'string_true': 'Displayed', 'hover_true': 'Hide', 'string_false': 'Hidden', 'hover_false': 'Display'}}"/>
+				<header>
+                        <!-- Refresh -->
+                        <button name="action_refresh" string="Refresh" class="oe_highlight" type="object"/>
+						<button type="object" class="oe_stat_button" icon="fa-eye" name="displayActualAmounts" 
+								string="Display Actual amounts" attrs="{'invisible' : [('display_actual_amounts', '=', True)]}">
+							<field name="display_actual_amounts" widget="boolean_toggle" />
 						</button>
-					</div>
+						<button type="object" class="oe_stat_button" icon="fa-eye" name="displayActualAmounts" 
+								string="Hide Actual amounts" attrs="{'invisible' : [('display_actual_amounts', '=', False)]}">
+							<field name="display_actual_amounts" widget="boolean_toggle" />
+						</button>
+				</header>
+				<sheet string="Project Budget">
 					<group>
 						<group>
 							<field name="plan_amount_without_coeff"/>

@@ -144,6 +144,15 @@ class BudgetForecast(models.Model):
         self._update_parent_plan()
         return res
 
+    def refresh(self):
+        self._update_parent_plan()
+        self._calc_plan_amount_without_coeff()
+        self._calc_plan_amount_with_coeff()
+        self._calc_plan_qty()
+        self._calc_plan_price()
+        self._calc_actual()
+
+
     def unlink(self):
         parent_ids = self.mapped('parent_id')
         

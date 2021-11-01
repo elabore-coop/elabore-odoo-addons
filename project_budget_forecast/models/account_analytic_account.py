@@ -66,3 +66,9 @@ class AccountAnalyticAccount(models.Model):
                 record.display_actual_amounts = False
             else:
                 record.display_actual_amounts = True
+
+    def action_refresh(self):
+        for record in self:
+            line_ids = record.mapped('budget_forecast_ids')
+            for line in line_ids:
+                line.refresh()
