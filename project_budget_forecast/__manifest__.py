@@ -80,6 +80,7 @@ This module is maintained by ELABORE.
         'view/budget_forecast_category.xml',
         'view/sale_order.xml',
         'view/budget_forecast.xml',
+        'view/budget_coefficient.xml',
         'view/hr_employee.xml',
         'view/product_category.xml',
         'view/product_template_form.xml',
