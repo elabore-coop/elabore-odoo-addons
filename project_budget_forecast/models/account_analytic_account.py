@@ -19,6 +19,12 @@ class AccountAnalyticAccount(models.Model):
     project_managers = fields.Many2many('res.users', string="Project managers",
                                         domain=lambda self: [('groups_id', 'in', self.env.ref('base.group_user').id)])
 
+
+    def create(self, values):
+        record = super(AccountAnalyticAccount, self).create(values)
+        record.project_managers = self.env["res.users"].browse(self.env.user.id)
+        return record
+
     @api.depends('budget_forecast_ids.plan_amount_without_coeff','budget_forecast_ids.plan_amount_with_coeff','budget_forecast_ids.actual_amount')
     def _calc_budget_amount(self):
         for record in self:
@@ -31,8 +37,6 @@ class AccountAnalyticAccount(models.Model):
         for record in self:
             line_ids = record.mapped('budget_coefficients_ids')
             record.global_coeff = sum(line_ids.mapped('coeff'))
-
-
     
     @api.depends('budget_forecast_ids')
     def _calc_budget_category_ids(self):
