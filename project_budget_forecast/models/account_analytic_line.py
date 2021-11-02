@@ -5,8 +5,8 @@ from odoo import models, api
 class AccountAnalyticLine(models.Model):
     _inherit = 'account.analytic.line'
     
-    def _timesheet_precalculation(self, vals):
-        vals = super(AccountAnalyticLine, self)._timesheet_precalculation(vals)
+    def _timesheet_preprocess(self, vals):
+        vals = super(AccountAnalyticLine, self)._timesheet_preprocess(vals)
         if vals.get('employee_id') and not vals.get('product_id'):
             employee = self.env['hr.employee'].browse(vals['employee_id'])
             vals['product_id'] = employee.timesheet_product_id.id

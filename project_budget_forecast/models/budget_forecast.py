@@ -104,9 +104,9 @@ class BudgetForecast(models.Model):
     @api.depends('analytic_id', 'child_ids')
     def _calc_line_ids(self):
         for record in self:
-            if record.child_ids:
-                record.analytic_line_ids = record.mapped('child_ids.analytic_line_ids')
-                continue
+            # if record.child_ids:
+            #     record.analytic_line_ids = record.mapped('child_ids.analytic_line_ids')
+            #     continue
             domain = [('account_id', '=', record.analytic_id.id), ('company_id', '=', record.company_id.id), ('product_id', '=', record.product_id.id)]
             record.analytic_line_ids = self.env['account.analytic.line'].search(domain)    
     
@@ -146,10 +146,8 @@ class BudgetForecast(models.Model):
 
     def refresh(self):
         self._update_parent_plan()
-        self._calc_plan_amount_without_coeff()
-        self._calc_plan_amount_with_coeff()
-        self._calc_plan_qty()
-        self._calc_plan_price()
+        self._calc_plan()
+        self._calc_line_ids()
         self._calc_actual()
 
 
