@@ -35,10 +35,32 @@
 						</group>
 					</group>
 					<group string="Analytic Lines">
-						<field name="analytic_line_ids" nolabel="1" mode="tree" />
+						<field name="analytic_line_ids" nolabel="1">
+							<tree>
+								<field name="date" />
+								<field name="employee_id"/>
+								<field name="product_id"/>
+								<field name="name"/>
+								<field name="unit_amount" string="Quantity"/>
+								<field name="amount"/>
+							</tree>
+						</field>
 					</group>
 					<group string="Childs" attrs="{'invisible' : [('child_ids','=', False)]}">
-						<field name="child_ids" nolabel="1" mode="tree" />
+						<field name="child_ids" nolabel="1">
+							<tree>
+								<field name="product_id" />
+								<field name="description" />
+								<field name="main_category" />
+								<field name="plan_price" sum="total"/>
+								<field name="actual_price" sum="total"/>		
+								<field name="plan_qty" sum="total"/>
+								<field name="actual_qty" sum="total"/>
+								<field name="plan_amount_without_coeff" sum="total"/>
+								<field name="plan_amount_with_coeff" sum="total"/>
+								<field name="actual_amount" sum="total"/>  		
+							</tree>
+						</field>
 					</group>					
 				</sheet>
 			</form>
@@ -54,14 +76,13 @@
 				<field name="product_id" />
 				<field name="description" />
 				<field name="main_category" />
-				<field name="plan_amount_without_coeff" sum="total"/>
-				<field name="plan_amount_with_coeff" sum="total"/>
+				<field name="plan_price" sum="total"/>
 				<field name="actual_price" sum="total"/>		
 				<field name="plan_qty" sum="total"/>
 				<field name="actual_qty" sum="total"/>
 				<field name="plan_amount_without_coeff" sum="total"/>
 				<field name="plan_amount_with_coeff" sum="total"/>
-				<field name="actual_amount" sum="total"/>  						
+				<field name="actual_amount" sum="total"/> 						
 			</tree>
 		</field>
 	</record>
