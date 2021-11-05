@@ -37,6 +37,32 @@ class BudgetForecast(models.Model):
     parent_id = fields.Many2one('budget.forecast', store=True , compute_sudo=True, compute = '_calc_parent_id' )
     child_ids = fields.One2many('budget.forecast', 'parent_id')
 
+    @api.model_create_multi
+    @api.returns('self', lambda value:value.id)
+    def create(self, vals_list):
+        records = super(BudgetForecast, self).create(vals_list)
+        records._update_parent_plan()
+        return records
+
+    def write(self, vals):
+        res= super(BudgetForecast, self).write(vals)
+        self._update_parent_plan()
+        return res
+
+    def unlink(self):
+        parent_ids = self.mapped('parent_id')
+        res= super(BudgetForecast, self).unlink()
+        parent_ids.exists()._calc_plan()
+        return res
+
+    def refresh(self):
+        self._calc_parent_id()
+        self._calc_line_ids()
+        self._calc_plan()
+        self._update_parent_plan()
+        self._calc_actual()
+        self._update_parent_actual()
+
     @api.onchange('product_id')
     def _onchange_product_id(self):
         if self.product_id and not self.description:
@@ -116,9 +142,6 @@ class BudgetForecast(models.Model):
     @api.depends('analytic_id', 'child_ids')
     def _calc_line_ids(self):
         for record in self:
-            # if record.child_ids:
-            #     record.analytic_line_ids = record.mapped('child_ids.analytic_line_ids')
-            #     continue
             domain = [('account_id', '=', record.analytic_id.id), ('company_id', '=', record.company_id.id), ('product_id', '=', record.product_id.id)]
             record.analytic_line_ids = self.env['account.analytic.line'].search(domain)    
     
@@ -143,32 +166,8 @@ class BudgetForecast(models.Model):
 
     def _update_parent_plan(self):
         self.exists().mapped('parent_id')._calc_plan()
-                        
-    @api.model_create_multi
-    @api.returns('self', lambda value:value.id)
-    def create(self, vals_list):
-        records = super(BudgetForecast, self).create(vals_list)
-        records._update_parent_plan()
-        return records
 
-    def write(self, vals):
-        res= super(BudgetForecast, self).write(vals)
-        self._update_parent_plan()
-        return res
-
-    def refresh(self):
-        self._update_parent_plan()
-        self._calc_line_ids()
-        self._calc_plan()
-        self._calc_actual()
-
-
-    def unlink(self):
-        parent_ids = self.mapped('parent_id')
-        
-        res= super(BudgetForecast, self).unlink()
-        
-        parent_ids.exists()._calc_plan()
-        return res
+    def _update_parent_actual(self):
+        self.exists().mapped('parent_id')._calc_actual()
         
         
