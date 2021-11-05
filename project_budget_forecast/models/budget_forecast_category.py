@@ -33,7 +33,8 @@ _view_arch = """
                 <field name="parent_id" optional="hide" />
                 <field name="display_type" invisible="1" />
                 <field name="product_id" />
-                <field name="description" />
+                <field name="description" optional="show"/>
+                <field name="note" optional="hide"/>
                 <field name="product_uom_id" optional="hide"/>
                 <field name="plan_price"/>
                 <field name="actual_price" attrs="{'column_invisible' : [('parent.display_actual_amounts', '=', False)]}"/>

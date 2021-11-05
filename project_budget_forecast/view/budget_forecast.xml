@@ -20,15 +20,15 @@
 						</group>
 					</group>
 					<group>
-						<group>
+						<group string="Unit prices">
 							<field name="plan_price"/>
 							<field name="actual_price"/>
 						</group>
-						<group>
+						<group string="Quantities">
 							<field name="plan_qty"/>
 							<field name="actual_qty"/>											
 						</group>
-						<group>
+						<group string="Totals">
 							<field name="plan_amount_without_coeff" />
 							<field name="plan_amount_with_coeff" />
 							<field name="actual_amount"/>  
@@ -61,6 +61,9 @@
 								<field name="actual_amount" sum="total"/>  		
 							</tree>
 						</field>
+					</group>
+					<group string="Notes">
+						<field name="note"/>
 					</group>					
 				</sheet>
 			</form>

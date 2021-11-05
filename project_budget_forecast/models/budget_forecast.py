@@ -37,6 +37,8 @@ class BudgetForecast(models.Model):
     parent_id = fields.Many2one('budget.forecast', store=True , compute_sudo=True, compute = '_calc_parent_id' )
     child_ids = fields.One2many('budget.forecast', 'parent_id')
 
+    note = fields.Text(string="Note")
+
     @api.model_create_multi
     @api.returns('self', lambda value:value.id)
     def create(self, vals_list):
