@@ -108,7 +108,7 @@ class BudgetForecast(models.Model):
                 record.plan_price = 0.00
 
 
-    @api.depends('analytic_id.budget_forecast_ids', 'sequence', 'parent_id')
+    @api.depends('analytic_id.budget_forecast_ids', 'sequence', 'parent_id', 'child_ids')
     def _calc_parent_id(self):
         for record in self:
             if record.display_type == 'line_section':
@@ -117,9 +117,9 @@ class BudgetForecast(models.Model):
                 continue
             found = False
             parent_id = False
-            for line in record.analytic_id.budget_forecast_ids.search(['|',
-                                                                            ('main_category', '=', record.main_category.id),
-                                                                            ('display_type', 'in', ['line_section', 'line_subsection'])]
+            for line in record.analytic_id.budget_forecast_ids.search([('analytic_id', '=', record.analytic_id.id)]
+                                                                        # ('main_category', '=', record.main_category.id),
+                                                                        #('display_type', 'in', ['line_section', 'line_subsection'])]
                                                                      ).sorted(key=lambda r: r.sequence, reverse = True):
                 if not found and line != record:
                     continue
