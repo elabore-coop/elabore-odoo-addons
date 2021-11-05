@@ -29,11 +29,12 @@ _view_arch = """
                     <create string="Add a note" context="{'default_display_type': 'line_note', 'default_main_category' : %(id)d}" />
                 </control>                
                 <field name="sequence" widget="handle" />  
-                <field name="main_category" invisible="1" />
+                <field name="main_category" invisible="1" optional="hide" />
+                <field name="parent_id" optional="hide" />
                 <field name="display_type" invisible="1" />
                 <field name="product_id" />
                 <field name="description" />
-                <field name="product_uom_id" invisible="1"/>
+                <field name="product_uom_id" optional="hide"/>
                 <field name="plan_price"/>
                 <field name="actual_price" attrs="{'column_invisible' : [('parent.display_actual_amounts', '=', False)]}"/>
                 <field name="plan_qty"/>
