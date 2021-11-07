@@ -1,0 +1,484 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* project_budget_forecast
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 13.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-07 08:48+0000\n"
+"PO-Revision-Date: 2021-11-07 08:48+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: project_budget_forecast
+#: model:ir.model.fields,field_description:project_budget_forecast.field_account_analytic_account__actual_amount
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast__actual_amount
+msgid "Actual Amount"
+msgstr "Montant actuel"
+
+#. module: project_budget_forecast
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast__actual_price
+msgid "Actual Price"
+msgstr "Prix actuel"
+
+#. module: project_budget_forecast
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast__actual_qty
+msgid "Actual Quantity"
+msgstr "Quantité actuelle"
+
+#. module: project_budget_forecast
+#: model:ir.model,name:project_budget_forecast.model_account_analytic_account
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast__analytic_id
+#: model:ir.model.fields,field_description:project_budget_forecast.field_crm_lead__analytic_account
+msgid "Analytic Account"
+msgstr "Compte analytique"
+
+#. module: project_budget_forecast
+#: model:ir.model,name:project_budget_forecast.model_account_analytic_line
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast__analytic_line_ids
+msgid "Analytic Line"
+msgstr "Ligne analytique"
+
+#. module: project_budget_forecast
+#: model_terms:ir.ui.view,arch_db:project_budget_forecast.view_budget_forecast_form
+msgid "Analytic Lines"
+msgstr "Lignes analytiques"
+
+#. module: project_budget_forecast
+#: model:ir.model.fields.selection,name:project_budget_forecast.selection__budget_forecast__display_type__line_article
+#: model:ir.model.fields.selection,name:project_budget_forecast.selection__product_template__budget_level__article
+msgid "Article"
+msgstr "Article"
+
+#. module: project_budget_forecast
+#: code:addons/project_budget_forecast/models/account_analytic_account.py:0
+#: code:addons/project_budget_forecast/models/account_analytic_account.py:0
+#: code:addons/project_budget_forecast/models/project.py:0
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_coefficient__budget_forecast
+#: model_terms:ir.ui.view,arch_db:project_budget_forecast.crm_lead_analytic_account_view_form
+#: model_terms:ir.ui.view,arch_db:project_budget_forecast.product_category_form_view_inherit
+#: model_terms:ir.ui.view,arch_db:project_budget_forecast.view_account_analytic_account_form
+#: model_terms:ir.ui.view,arch_db:project_budget_forecast.view_order_form
+#, python-format
+msgid "Budget"
+msgstr "Chiffrage"
+
+#. module: project_budget_forecast
+#: model:ir.actions.act_window,name:project_budget_forecast.act_budget_forecast_category
+#: model:ir.model.fields,field_description:project_budget_forecast.field_account_analytic_account__budget_category_ids
+#: model:ir.model.fields,field_description:project_budget_forecast.field_product_category__budget_category_id
+#: model:ir.model.fields,field_description:project_budget_forecast.field_product_product__budget_category_id
+#: model:ir.model.fields,field_description:project_budget_forecast.field_product_template__budget_category_id
+#: model:ir.ui.menu,name:project_budget_forecast.menu_budget_forecast_category
+msgid "Budget Category"
+msgstr "Catégorie de chiffrage"
+
+#. module: project_budget_forecast
+#: model:ir.model.fields,field_description:project_budget_forecast.field_account_analytic_account__budget_coefficients_ids
+msgid "Budget Coefficients"
+msgstr "Coefficients de chiffrage"
+
+#. module: project_budget_forecast
+#: model:ir.model.fields,field_description:project_budget_forecast.field_account_analytic_account__budget_forecast_ids
+msgid "Budget Forecast"
+msgstr "Chiffrage"
+
+#. module: project_budget_forecast
+#: model:ir.actions.act_window,name:project_budget_forecast.act_budget_forecast
+#: model:ir.ui.menu,name:project_budget_forecast.menu_budget_forecast
+msgid "Budget Forecast lines"
+msgstr "Lignes de chiffrage"
+
+#. module: project_budget_forecast
+#: model:ir.model.fields,field_description:project_budget_forecast.field_product_product__budget_level
+#: model:ir.model.fields,field_description:project_budget_forecast.field_product_template__budget_level
+msgid "Budget level"
+msgstr "Niveau de chiffrage"
+
+#. module: project_budget_forecast
+#: model:ir.model.fields.selection,name:project_budget_forecast.category
+msgid "Category"
+msgstr "Sous-section"
+
+#. module: project_budget_forecast
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast__child_ids
+msgid "Child"
+msgstr "Enfant"
+
+#. module: project_budget_forecast
+#: model_terms:ir.ui.view,arch_db:project_budget_forecast.view_budget_forecast_form
+msgid "Childs"
+msgstr "Enfants"
+
+#. module: project_budget_forecast
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast_category__code
+msgid "Code"
+msgstr ""
+
+#. module: project_budget_forecast
+#: model:ir.model.constraint,message:project_budget_forecast.constraint_budget_forecast_category_uk_code
+msgid "Code must be unique!"
+msgstr "Le code doit être unique !"
+
+#. module: project_budget_forecast
+#: model_terms:ir.ui.view,arch_db:project_budget_forecast.view_analytic_budget_forecast
+msgid "Coeff"
+msgstr ""
+
+#. module: project_budget_forecast
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_coefficient__coeff
+msgid "Coefficient"
+msgstr ""
+
+#. module: project_budget_forecast
+#: model:ir.model,name:project_budget_forecast.model_budget_coefficient
+msgid "Coefficients for the order line price calculation"
+msgstr "Coefficiens pour le calcul des montants de chiffrages"
+
+#. module: project_budget_forecast
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: project_budget_forecast
+#. openerp-web
+#: code:addons/project_budget_forecast/static/src/js/section_category_and_note_fields_backend.js:0
+#, python-format
+msgid "Configure a product"
+msgstr "Configurer un produit"
+
+#. module: project_budget_forecast
+#: model:ir.actions.server,name:project_budget_forecast.act_budget_forecast_category_views_update
+msgid "Create View"
+msgstr "Créer une vue"
+
+#. module: project_budget_forecast
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_coefficient__create_uid
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast__create_uid
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast_category__create_uid
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast_message_wizard__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: project_budget_forecast
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_coefficient__create_date
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast__create_date
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast_category__create_date
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast_message_wizard__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: project_budget_forecast
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast__currency_id
+msgid "Currency"
+msgstr "Devise"
+
+#. module: project_budget_forecast
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast__description
+msgid "Description"
+msgstr ""
+
+#. module: project_budget_forecast
+#: model:ir.model.fields,field_description:project_budget_forecast.field_account_analytic_account__display_actual_amounts
+msgid "Display Actual Amounts"
+msgstr "Afficher les montants actuels"
+
+#. module: project_budget_forecast
+#: model_terms:ir.ui.view,arch_db:project_budget_forecast.view_analytic_budget_forecast
+msgid "Display Actual amounts"
+msgstr "Afficher les montants actuels"
+
+#. module: project_budget_forecast
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_coefficient__display_name
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast__display_name
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast_category__display_name
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast_message_wizard__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: project_budget_forecast
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast__display_type
+msgid "Display Type"
+msgstr "Type de ligne"
+
+#. module: project_budget_forecast
+#: model:ir.model,name:project_budget_forecast.model_hr_employee
+msgid "Employee"
+msgstr "Employé"
+
+#. module: project_budget_forecast
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast_category__field_name
+msgid "Field Name"
+msgstr "Nom de champ"
+
+#. module: project_budget_forecast
+#: model:ir.model.fields,field_description:project_budget_forecast.field_account_analytic_account__global_coeff
+msgid "Global coefficient"
+msgstr "Coefficient global"
+
+#. module: project_budget_forecast
+#: model_terms:ir.ui.view,arch_db:project_budget_forecast.view_analytic_budget_forecast
+msgid "Hide Actual amounts"
+msgstr "Cacher les montants actuels"
+
+#. module: project_budget_forecast
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_coefficient__id
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast__id
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast_category__id
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast_message_wizard__id
+msgid "ID"
+msgstr ""
+
+#. module: project_budget_forecast
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_coefficient____last_update
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast____last_update
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast_category____last_update
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast_message_wizard____last_update
+msgid "Last Modified on"
+msgstr "Dernière modification le"
+
+#. module: project_budget_forecast
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_coefficient__write_uid
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast__write_uid
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast_category__write_uid
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast_message_wizard__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: project_budget_forecast
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_coefficient__write_date
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast__write_date
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast_category__write_date
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast_message_wizard__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: project_budget_forecast
+#: model:ir.model,name:project_budget_forecast.model_crm_lead
+msgid "Lead/Opportunity"
+msgstr "Piste/opportunité"
+
+#. module: project_budget_forecast
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast__main_category
+msgid "Main Category"
+msgstr "Catégorie principale"
+
+#. module: project_budget_forecast
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast_message_wizard__message
+msgid "Message"
+msgstr ""
+
+#. module: project_budget_forecast
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast_category__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: project_budget_forecast
+#: model:ir.model.constraint,message:project_budget_forecast.constraint_budget_forecast_category_uk_name
+msgid "Name must be unique!"
+msgstr "Le nom doit être unique !"
+
+#. module: project_budget_forecast
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_coefficient__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: project_budget_forecast
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast__note
+#: model:ir.model.fields.selection,name:project_budget_forecast.selection__budget_forecast__display_type__line_note
+msgid "Note"
+msgstr "Note"
+
+#. module: project_budget_forecast
+#: model_terms:ir.ui.view,arch_db:project_budget_forecast.view_budget_forecast_form
+msgid "Notes"
+msgstr "Notes"
+
+#. module: project_budget_forecast
+#: model_terms:ir.ui.view,arch_db:project_budget_forecast.budget_forecast_message_wizard_form
+msgid "Ok"
+msgstr ""
+
+#. module: project_budget_forecast
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast__parent_id
+msgid "Parent"
+msgstr ""
+
+#. module: project_budget_forecast
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast__plan_amount_without_coeff
+msgid "Plan Amount"
+msgstr "Montant prévu"
+
+#. module: project_budget_forecast
+#: model:ir.model.fields,field_description:project_budget_forecast.field_account_analytic_account__plan_amount_with_coeff
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast__actual_amount_display
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast__plan_amount_display
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast__plan_amount_with_coeff
+#: model:ir.model.fields,field_description:project_budget_forecast.field_crm_lead__plan_amount_with_coeff
+#: model:ir.model.fields,field_description:project_budget_forecast.field_sale_order__plan_amount_with_coeff
+msgid "Plan Amount with coeff"
+msgstr "Montant prévu avec coeff"
+
+#. module: project_budget_forecast
+#: model:ir.model.fields,field_description:project_budget_forecast.field_account_analytic_account__plan_amount_without_coeff
+msgid "Plan Amount without coeff"
+msgstr "Montant prévu sans coeff"
+
+#. module: project_budget_forecast
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast__plan_price
+msgid "Plan Price"
+msgstr "Prix prévu"
+
+#. module: project_budget_forecast
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast__plan_qty
+msgid "Plan Quantity"
+msgstr "Quantité prévue"
+
+#. module: project_budget_forecast
+#: code:addons/project_budget_forecast/models/sale_order.py:0
+#, python-format
+msgid "Please set the analytic account"
+msgstr "Renseignez le compte analytique svp"
+
+#. module: project_budget_forecast
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast__product_id
+msgid "Product"
+msgstr "Produit"
+
+#. module: project_budget_forecast
+#: model:ir.model,name:project_budget_forecast.model_product_category
+msgid "Product Category"
+msgstr "Catégorie d'article"
+
+#. module: project_budget_forecast
+#: model:ir.model,name:project_budget_forecast.model_product_template
+msgid "Product Template"
+msgstr "Modèle d'article"
+
+#. module: project_budget_forecast
+#: model:ir.model,name:project_budget_forecast.model_project_project
+msgid "Project"
+msgstr "Projet"
+
+#. module: project_budget_forecast
+#: model_terms:ir.ui.view,arch_db:project_budget_forecast.view_analytic_budget_forecast
+msgid "Project Budget"
+msgstr "Chiffrage de projet"
+
+#. module: project_budget_forecast
+#: model:ir.model.fields,field_description:project_budget_forecast.field_account_analytic_account__project_section_budget_ids
+msgid "Project Section Budget"
+msgstr "Lignes de section"
+
+#. module: project_budget_forecast
+#: model:ir.model.fields,field_description:project_budget_forecast.field_account_analytic_account__project_managers
+msgid "Project managers"
+msgstr "Managers de projet"
+
+#. module: project_budget_forecast
+#: model_terms:ir.ui.view,arch_db:project_budget_forecast.view_budget_forecast_form
+msgid "Quantities"
+msgstr "Quantités"
+
+#. module: project_budget_forecast
+#: model_terms:ir.ui.view,arch_db:project_budget_forecast.view_budget_forecast_form
+msgid "Quantity"
+msgstr "Quantité"
+
+#. module: project_budget_forecast
+#: model_terms:ir.ui.view,arch_db:project_budget_forecast.view_analytic_budget_forecast
+msgid "Refresh"
+msgstr "Actualiser"
+
+#. module: project_budget_forecast
+#: model:ir.model,name:project_budget_forecast.model_sale_order
+msgid "Sales Order"
+msgstr "Bon de commande"
+
+#. module: project_budget_forecast
+#: model:ir.model.fields.selection,name:project_budget_forecast.selection__budget_forecast__display_type__line_section
+#: model:ir.model.fields.selection,name:project_budget_forecast.selection__product_template__budget_level__section
+msgid "Section"
+msgstr ""
+
+#. module: project_budget_forecast
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast__sequence
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast_category__sequence
+msgid "Sequence"
+msgstr "Séquence"
+
+#. module: project_budget_forecast
+#: model:ir.model,name:project_budget_forecast.model_budget_forecast_message_wizard
+msgid "Show Message"
+msgstr "Montrer le message"
+
+#. module: project_budget_forecast
+#: model:ir.model.fields.selection,name:project_budget_forecast.selection__budget_forecast__display_type__line_subsection
+msgid "Sub-Section"
+msgstr "Sous-section"
+
+#. module: project_budget_forecast
+#: model_terms:ir.ui.view,arch_db:project_budget_forecast.view_analytic_budget_forecast
+msgid "Summary"
+msgstr "Résumé"
+
+#. module: project_budget_forecast
+#: model:ir.model.fields,help:project_budget_forecast.field_budget_forecast__display_type
+msgid "Technical field for UX purpose."
+msgstr "Champ technique pour le design"
+
+#. module: project_budget_forecast
+#: model:ir.model.fields,help:project_budget_forecast.field_budget_forecast__main_category
+msgid "Technical field for budget_forecast_category fields creation"
+msgstr "Champ technique pour la création des catégories de chiffrage"
+
+#. module: project_budget_forecast
+#: model:ir.model.fields,field_description:project_budget_forecast.field_hr_employee__timesheet_product_id
+msgid "Timesheet Product"
+msgstr "Ligne de temps"
+
+#. module: project_budget_forecast
+#: model_terms:ir.ui.view,arch_db:project_budget_forecast.view_analytic_budget_forecast
+msgid "Total"
+msgstr "Total"
+
+#. module: project_budget_forecast
+#: model_terms:ir.ui.view,arch_db:project_budget_forecast.view_budget_forecast_form
+msgid "Totals"
+msgstr "Totaux"
+
+#. module: project_budget_forecast
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast__product_uom_id
+msgid "Unit of Measure"
+msgstr "Unité de mesure"
+
+#. module: project_budget_forecast
+#: model_terms:ir.ui.view,arch_db:project_budget_forecast.view_budget_forecast_form
+msgid "Unit prices"
+msgstr "Prix unitaires"
+
+#. module: project_budget_forecast
+#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast_category__view_id
+msgid "View"
+msgstr "Vue"
+
+#. module: project_budget_forecast
+#: model:ir.model,name:project_budget_forecast.model_budget_forecast
+msgid "budget.forecast"
+msgstr ""
+
+#. module: project_budget_forecast
+#: model:ir.model,name:project_budget_forecast.model_budget_forecast_category
+msgid "budget.forecast.category"
+msgstr ""
+
+#. module: project_budget_forecast
+#: model_terms:ir.ui.view,arch_db:project_budget_forecast.view_budget_forecast_form
+#: model_terms:ir.ui.view,arch_db:project_budget_forecast.view_budget_forecast_tree
+msgid "total"
+msgstr "total"
