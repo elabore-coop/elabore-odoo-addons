@@ -9,6 +9,7 @@
 					<group>
                         <field name="name" />
                         <field name="coeff" />
+						<field name="note" />
                         <field name="budget_forecast"/>
 					</group>
 				</sheet>

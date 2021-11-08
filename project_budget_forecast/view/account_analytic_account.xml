@@ -45,6 +45,7 @@
 							<field name="budget_coefficients_ids" nolabel="1">
 								<tree>
 									<field name="name" />
+									<field name="note" />
 									<field name="coeff" sum="Total"/>								
 								</tree>
 							</field>

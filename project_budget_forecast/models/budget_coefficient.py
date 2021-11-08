@@ -9,3 +9,4 @@ class BudgetCoefficient(models.Model):
     name = fields.Char(string='Name', required=True)
     coeff = fields.Float(string='Coefficient', required=True, default=0.00)
     budget_forecast = fields.Many2one('account.analytic.account', string="Budget", required=True)
+    note = fields.Text(string="Description")
