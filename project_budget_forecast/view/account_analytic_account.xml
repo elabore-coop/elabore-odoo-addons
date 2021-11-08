@@ -33,7 +33,8 @@
 					<notebook>
 						<page name="summary" string="Summary" attrs="{'invisible' : [('project_section_budget_ids', '=', False)]}">
 							<field name="project_section_budget_ids" nolabel="1" readonly = "1">
-								<tree>
+								<tree default_order="sequence">
+									<field name="sequence" invisible="1" />
 									<field name="product_id" />
 									<field name="plan_amount_without_coeff" sum="Total"/>
 									<field name="plan_amount_with_coeff" sum="Total"/>
