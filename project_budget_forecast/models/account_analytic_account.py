@@ -12,7 +12,7 @@ class AccountAnalyticAccount(models.Model):
     plan_amount_without_coeff = fields.Float('Plan Amount without coeff', compute = '_calc_budget_amount')
     plan_amount_with_coeff = fields.Float('Plan Amount with coeff', compute = '_calc_budget_amount')
     actual_amount = fields.Float('Actual Amount', compute = '_calc_budget_amount')
-    
+    diff_amount = fields.Float('Diff Amount', compute = '_calc_budget_amount')
     budget_category_ids = fields.Many2many('budget.forecast.category', compute = '_calc_budget_category_ids')
     
     display_actual_amounts = fields.Boolean(string='Display Actual Amounts', default=False)
@@ -32,6 +32,7 @@ class AccountAnalyticAccount(models.Model):
             record.plan_amount_without_coeff = sum(line_ids.mapped('plan_amount_without_coeff'))
             record.plan_amount_with_coeff = sum(line_ids.mapped('plan_amount_with_coeff'))
             record.actual_amount = sum(line_ids.mapped('actual_amount'))
+            record.diff_amount = record.plan_amount_with_coeff - record.actual_amount
 
     def _calc_global_coeff(self):
         for record in self:

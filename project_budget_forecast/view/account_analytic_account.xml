@@ -25,6 +25,7 @@
 							<field name="plan_amount_without_coeff"/>
 							<field name="plan_amount_with_coeff"/>
 							<field name="actual_amount" attrs="{'invisible' : [('display_actual_amounts', '=', False)]}"/>
+							<field name="diff_amount" attrs="{'invisible' : [('display_actual_amounts', '=', False)]}"/>
 						</group>
 						<group>
 							<field name="project_managers" widget="many2many_tags"/>

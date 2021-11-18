@@ -34,6 +34,7 @@ class BudgetForecast(models.Model):
     actual_price = fields.Monetary('Actual Price', compute = '_calc_actual', store=True, compute_sudo=True)
     actual_amount = fields.Monetary('Actual Amount', compute = '_calc_actual', store=True, compute_sudo=True)
     actual_amount_display = fields.Monetary('Plan Amount with coeff', store=True)
+    diff_amount = fields.Monetary('Diff', compute = '_calc_actual', store=True, compute_sudo=True)
     parent_id = fields.Many2one('budget.forecast', store=True , compute_sudo=True, compute = '_calc_parent_id' )
     child_ids = fields.One2many('budget.forecast', 'parent_id')
 
@@ -159,6 +160,7 @@ class BudgetForecast(models.Model):
             record.actual_qty = abs(sum(line_ids.mapped('unit_amount'))) + child_actual_qty
             record.actual_amount = -sum(line_ids.mapped('amount')) + child_actual_amount
             record.actual_price = abs(record.actual_qty and record.actual_amount / record.actual_qty)
+            record.diff_amount = record.plan_amount_with_coeff - record.actual_amount
     
     def _calc_plan(self):
         self._calc_plan_qty()
