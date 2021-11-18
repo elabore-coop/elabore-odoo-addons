@@ -316,8 +316,6 @@ msgstr ""
 
 #. module: project_budget_forecast
 #: model:ir.model.fields,field_description:project_budget_forecast.field_account_analytic_account__plan_amount_with_coeff
-#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast__actual_amount_display
-#: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast__plan_amount_display
 #: model:ir.model.fields,field_description:project_budget_forecast.field_budget_forecast__plan_amount_with_coeff
 #: model:ir.model.fields,field_description:project_budget_forecast.field_crm_lead__plan_amount_with_coeff
 #: model:ir.model.fields,field_description:project_budget_forecast.field_sale_order__plan_amount_with_coeff

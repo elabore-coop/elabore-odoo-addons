@@ -27,13 +27,11 @@ class BudgetForecast(models.Model):
     plan_price = fields.Monetary('Plan Price', default=0.00)
     plan_amount_without_coeff = fields.Monetary('Plan Amount', compute = '_calc_plan_amount_without_coeff', store=True)
     plan_amount_with_coeff = fields.Monetary('Plan Amount with coeff', compute = '_calc_plan_amount_with_coeff', store=True)
-    plan_amount_display = fields.Monetary('Plan Amount with coeff', store=True)
     
     analytic_line_ids = fields.Many2many('account.analytic.line', compute = '_calc_line_ids')
     actual_qty = fields.Float('Actual Quantity', compute = '_calc_actual', store=True, compute_sudo=True)
     actual_price = fields.Monetary('Actual Price', compute = '_calc_actual', store=True, compute_sudo=True)
     actual_amount = fields.Monetary('Actual Amount', compute = '_calc_actual', store=True, compute_sudo=True)
-    actual_amount_display = fields.Monetary('Plan Amount with coeff', store=True)
     diff_amount = fields.Monetary('Diff', compute = '_calc_actual', store=True, compute_sudo=True)
     parent_id = fields.Many2one('budget.forecast', store=True , compute_sudo=True, compute = '_calc_parent_id' )
     child_ids = fields.One2many('budget.forecast', 'parent_id')
