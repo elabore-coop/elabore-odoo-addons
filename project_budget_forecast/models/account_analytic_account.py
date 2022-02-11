@@ -6,7 +6,7 @@ class AccountAnalyticAccount(models.Model):
     _inherit = 'account.analytic.account'
     
     budget_forecast_ids = fields.One2many('budget.forecast', 'analytic_id', copy = True)
-    project_section_budget_ids = fields.One2many('budget.forecast', 'analytic_id', domain = [('display_type','=', 'line_section')], copy = False)
+    project_section_budget_ids = fields.One2many('budget.forecast', 'analytic_id', domain = [('display_type','in', ['line_section','line_subsection'])], copy = False)
     budget_coefficients_ids = fields.One2many('budget.coefficient', 'budget_forecast', copy=True)
     global_coeff = fields.Float('Global coefficient', compute = '_calc_global_coeff')
     plan_amount_without_coeff = fields.Float('Plan Amount without coeff', compute = '_calc_budget_amount')
