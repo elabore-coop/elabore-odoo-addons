@@ -19,10 +19,23 @@ class AccountAnalyticAccount(models.Model):
     project_managers = fields.Many2many('res.users', string="Project managers",
                                         domain=lambda self: [('groups_id', 'in', self.env.ref('base.group_user').id)])
 
+    def default_budget_coefficients_ids(self):
+        for coeff in self.budget_coefficients_ids:
+            coeff.unlink()
+        coeff_models = self.env["budget.coefficient.model"].search([])
+        for model in coeff_models:
+            vals = {
+                "name": model.name,
+                "coeff": model.coeff,
+                "note": model.note,
+                "budget_forecast": self.id,
+            }
+            self.env["budget.coefficient"].create(vals)
 
     def create(self, values):
         record = super(AccountAnalyticAccount, self).create(values)
         record.project_managers = self.env["res.users"].browse(self.env.user.id)
+        record.default_budget_coefficients_ids()
         return record
 
     @api.depends('budget_forecast_ids.plan_amount_without_coeff','budget_forecast_ids.plan_amount_with_coeff','budget_forecast_ids.actual_amount')

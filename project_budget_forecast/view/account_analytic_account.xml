@@ -51,6 +51,7 @@
 									<field name="coeff" sum="Total"/>								
 								</tree>
 							</field>
+							<button name="default_budget_coefficients_ids" string="Re-initialize" class="oe_highlight" type="object" />
 						</page>
 					</notebook>
 				</sheet>

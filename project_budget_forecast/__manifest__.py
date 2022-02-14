@@ -92,6 +92,7 @@ This module is maintained by ELABORE.
         'data/product_category.xml',
         'data/function.xml',
         'wizard/message_wizard.xml'
+        "view/budget_coefficient_model.xml",
     ],
     # only loaded in demonstration mode
     'demo': [

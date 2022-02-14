@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<record id="view_budget_coefficient_tree" model="ir.ui.view">
+		<field name="name">budget.coefficient.tree</field>
+		<field name="model">budget.coefficient.model</field>
+		<field name="arch" type="xml">
+			<tree editable="top">
+				<field name="name" />
+				<field name="coeff" />
+				<field name="note" />
+			</tree>
+		</field>
+	</record>
+</odoo>
