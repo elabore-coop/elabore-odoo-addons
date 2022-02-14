@@ -29,3 +29,9 @@ class Lead(models.Model):
                 "target": "new",
             }
         return self.analytic_account.action_budget_forecast()
+
+    def action_new_quotation(self):
+        action = super(Lead, self).action_new_quotation()
+        if self.analytic_account:
+            action["context"]["default_analytic_account_id"] = self.analytic_account.id
+        return action
