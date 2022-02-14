@@ -8,14 +8,14 @@
 		<field name="binding_type">action</field>
 		<field name="state">code</field>
 		<field name="code">
-<![CDATA[
+			<![CDATA[
 for record in records:
   record._create_field()
   record._create_view()
 ]]>
 		</field>
 	</record>
-	
+
 	<record id="act_budget_forecast_category" model="ir.actions.act_window">
 		<field name="name">Budget Category</field>
 		<field name="res_model">budget.forecast.category</field>
@@ -27,4 +27,6 @@ for record in records:
 		<field name="res_model">budget.coefficient.model</field>
 		<field name="view_mode">tree</field>
 	</record>
+
+
 </odoo>

@@ -1,16 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-	<menuitem id="menu_budget_forecast" 
-			action="act_budget_forecast" 
-			parent="project.menu_project_config" 
-			sequence="20" />
-			
-	<menuitem id="menu_budget_forecast_category" 
-			action="act_budget_forecast_category" 
-			parent="project.menu_project_config" 
-			sequence="20" />
-		
+	<menuitem id="menu_budget_forecast" action="act_budget_forecast" parent="project.menu_project_config" sequence="20" />
+
+	<menuitem id="menu_budget_forecast_category" action="act_budget_forecast_category" parent="project.menu_project_config" sequence="20" />
 
 	<menuitem id="menu_budget_forecast_coeff_models" action="act_budget_forecast_coeff_models" parent="project.menu_project_config" sequence="20" />
 

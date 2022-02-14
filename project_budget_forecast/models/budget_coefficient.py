@@ -13,10 +13,12 @@ class BudgetCoefficientModel(models.Model):
 
 
 class BudgetCoefficient(models.Model):
-    _name = 'budget.coefficient'
-    _description = 'Coefficients for the order line price calculation'
+    _name = "budget.coefficient"
+    _description = "Coefficients for the order line price calculation"
 
-    name = fields.Char(string='Name', required=True)
-    coeff = fields.Float(string='Coefficient', required=True, default=0.00)
-    budget_forecast = fields.Many2one('account.analytic.account', string="Budget", required=True)
+    name = fields.Char(string="Name", required=True)
+    coeff = fields.Float(string="Coefficient", required=True, default=0.00)
+    budget_forecast = fields.Many2one(
+        "account.analytic.account", string="Budget", required=True
+    )
     note = fields.Text(string="Description")

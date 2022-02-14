@@ -8,38 +8,36 @@
 		<field name="arch" type="xml">
 			<form string="Project Budget" create="false" delete="false">
 				<header>
-                        <!-- Refresh -->
-                        <button name="action_refresh" string="Refresh" class="oe_highlight" type="object"/>
-						<button type="object" class="oe_stat_button" icon="fa-eye" name="displayActualAmounts" 
-								string="Display Actual amounts" attrs="{'invisible' : [('display_actual_amounts', '=', True)]}">
-							<field name="display_actual_amounts" widget="boolean_toggle" />
-						</button>
-						<button type="object" class="oe_stat_button" icon="fa-eye" name="displayActualAmounts" 
-								string="Hide Actual amounts" attrs="{'invisible' : [('display_actual_amounts', '=', False)]}">
-							<field name="display_actual_amounts" widget="boolean_toggle" />
-						</button>
+					<!-- Refresh -->
+					<button name="action_refresh" string="Refresh" class="oe_highlight" type="object" />
+					<button type="object" class="oe_stat_button" icon="fa-eye" name="displayActualAmounts" string="Display Actual amounts" attrs="{'invisible' : [('display_actual_amounts', '=', True)]}">
+						<field name="display_actual_amounts" widget="boolean_toggle" />
+					</button>
+					<button type="object" class="oe_stat_button" icon="fa-eye" name="displayActualAmounts" string="Hide Actual amounts" attrs="{'invisible' : [('display_actual_amounts', '=', False)]}">
+						<field name="display_actual_amounts" widget="boolean_toggle" />
+					</button>
 				</header>
 				<sheet string="Project Budget">
 					<group>
 						<group>
-							<field name="plan_amount_without_coeff"/>
-							<field name="plan_amount_with_coeff"/>
-							<field name="actual_amount" attrs="{'invisible' : [('display_actual_amounts', '=', False)]}"/>
-							<field name="diff_amount" attrs="{'invisible' : [('display_actual_amounts', '=', False)]}"/>
+							<field name="plan_amount_without_coeff" />
+							<field name="plan_amount_with_coeff" />
+							<field name="actual_amount" attrs="{'invisible' : [('display_actual_amounts', '=', False)]}" />
+							<field name="diff_amount" attrs="{'invisible' : [('display_actual_amounts', '=', False)]}" />
 						</group>
 						<group>
-							<field name="project_managers" widget="many2many_tags"/>
+							<field name="project_managers" widget="many2many_tags" />
 						</group>
 					</group>
 					<notebook>
 						<page name="summary" string="Summary" attrs="{'invisible' : [('project_section_budget_ids', '=', False)]}">
-							<field name="project_section_budget_ids" nolabel="1" readonly = "1">
+							<field name="project_section_budget_ids" widget="section_category_and_note_one2many" mode="tree" nolabel="1" readonly="1">
 								<tree default_order="sequence">
 									<field name="sequence" invisible="1" />
 									<field name="product_id" />
-									<field name="plan_amount_without_coeff" sum="Total"/>
-									<field name="plan_amount_with_coeff" sum="Total"/>
-									<field name="actual_amount" sum="Total" attrs="{'column_invisible' : [('parent.display_actual_amounts', '=', False)]}"/>									
+									<field name="plan_amount_without_coeff" sum="Total" />
+									<field name="plan_amount_with_coeff" sum="Total" />
+									<field name="actual_amount" sum="Total" attrs="{'column_invisible' : [('parent.display_actual_amounts', '=', False)]}" />
 								</tree>
 							</field>
 						</page>
@@ -48,7 +46,7 @@
 								<tree>
 									<field name="name" />
 									<field name="note" />
-									<field name="coeff" sum="Total"/>								
+									<field name="coeff" sum="Total" />
 								</tree>
 							</field>
 							<button name="default_budget_coefficients_ids" string="Re-initialize" class="oe_highlight" type="object" />
@@ -56,16 +54,16 @@
 					</notebook>
 				</sheet>
 				<!-- Attachment preview -->
-				<div class="o_attachment_preview"/>
+				<div class="o_attachment_preview" />
 				<!-- Chatter -->
 				<div class="oe_chatter">
-					<field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
-					<field name="message_ids" widget="mail_thread"/>
+					<field name="message_follower_ids" widget="mail_followers" groups="base.group_user" />
+					<field name="message_ids" widget="mail_thread" />
 				</div>
 			</form>
 		</field>
 	</record>
-		
+
 	<record id="view_account_analytic_account_form" model="ir.ui.view">
 		<field name="name">analytic.analytic.account.form</field>
 		<field name="model">account.analytic.account</field>
@@ -77,9 +75,9 @@
 				</button>
 			</div>
 			<xpath expr="//field[@name='company_id']" position="after">
-				<field name="project_managers" widget="many2many_tags"/> 
+				<field name="project_managers" widget="many2many_tags" />
 			</xpath>
 		</field>
 	</record>
-		
+
 </odoo>

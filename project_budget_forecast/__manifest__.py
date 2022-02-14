@@ -2,15 +2,15 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 {
-    'name': 'project_budget_forecast',
-    'version': '13.0.0.0.1',
-    'author': 'Elabore',
-    'maintainer': 'False',
-    'website': 'False',
-    'license': 'AGPL-3',
-    'category': 'False',
-    'summary': 'Project Forcast Budget to plan the costings and expenses of your projects',
-    'description': """
+    "name": "project_budget_forecast",
+    "version": "13.0.0.0.1",
+    "author": "Elabore",
+    "maintainer": "False",
+    "website": "False",
+    "license": "AGPL-3",
+    "category": "False",
+    "summary": "Project Forcast Budget to plan the costings and expenses of your projects",
+    "description": """
 .. image:: https://img.shields.io/badge/licence-AGPL--3-blue.svg
    :target: http://www.gnu.org/licenses/agpl-3.0-standalone.html
    :alt: License: AGPL-3
@@ -55,56 +55,51 @@ Maintainer
 This module is maintained by ELABORE.
 
 """,
-
     # any module necessary for this one to work correctly
-    'depends': [
-        'analytic',
-        'base',
-        'crm',
-        'hr',
-        'hr_timesheet',
-        'product',
-        'project',
-        'sale',
-        'sale_timesheet',
-        'stock',
+    "depends": [
+        "analytic",
+        "base",
+        "crm",
+        "hr",
+        "hr_timesheet",
+        "product",
+        "project",
+        "sale",
+        "sale_timesheet",
+        "stock",
     ],
-    'external_dependencies': {
-        'python': [],
+    "external_dependencies": {
+        "python": [],
     },
-
     # always loaded
-    'data': [
-        'security/ir.model.access.csv',
-        'view/account_analytic_account.xml',
-        'view/budget_forecast_category.xml',
-        'view/sale_order.xml',
-        'view/budget_forecast.xml',
-        'view/budget_coefficient.xml',
-        'view/hr_employee.xml',
-        'view/product_category.xml',
-        'view/product_template_form.xml',
-        'view/actions.xml',
-        'view/assets.xml',
-        'view/menu.xml',
-        'view/crm_lead.xml',
-        'data/budget_forecast_category.xml',
-        'data/product_category.xml',
-        'data/function.xml',
-        'wizard/message_wizard.xml'
+    "data": [
+        "security/ir.model.access.csv",
+        "view/account_analytic_account.xml",
+        "view/budget_forecast_category.xml",
+        "view/sale_order.xml",
+        "view/budget_forecast.xml",
+        "view/budget_coefficient.xml",
         "view/budget_coefficient_model.xml",
+        "view/hr_employee.xml",
+        "view/product_category.xml",
+        "view/product_template_form.xml",
+        "view/actions.xml",
+        "view/assets.xml",
+        "view/menu.xml",
+        "view/crm_lead.xml",
+        "data/budget_forecast_category.xml",
+        "data/product_category.xml",
+        "data/function.xml",
+        "wizard/message_wizard.xml",
     ],
     # only loaded in demonstration mode
-    'demo': [
-    ],
-
-    'js': [],
-    'css': [],
-    'qweb': [],
-
-    'installable': True,
+    "demo": [],
+    "js": [],
+    "css": [],
+    "qweb": [],
+    "installable": True,
     # Install this module automatically if all dependency have been previously
     # and independently installed.  Used for synergetic or glue modules.
-    'auto_install': False,
-    'application': False,
+    "auto_install": False,
+    "application": False,
 }
