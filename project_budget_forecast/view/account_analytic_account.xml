@@ -10,6 +10,7 @@
 				<header>
 					<!-- Refresh -->
 					<button name="action_refresh" string="Refresh" class="oe_highlight" type="object" />
+					<button name="action_create_quotation" string="Create Quotation" class="oe_highlight" type="object" />
 					<button type="object" class="oe_stat_button" icon="fa-eye" name="displayActualAmounts" string="Display Actual amounts" attrs="{'invisible' : [('display_actual_amounts', '=', True)]}">
 						<field name="display_actual_amounts" widget="boolean_toggle" />
 					</button>

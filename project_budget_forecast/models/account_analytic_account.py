@@ -140,3 +140,38 @@ class AccountAnalyticAccount(models.Model):
             line_ids = record.mapped("budget_forecast_ids")
             for line in line_ids:
                 line.refresh()
+
+    def action_create_quotation(self):
+        quotation = self.env["sale.order"].create(
+            {
+                "company_id": self.company_id.id,
+                "partner_id": self.env.user.partner_id.id,
+            }
+        )
+        for section in self.project_section_budget_ids.filtered(
+            lambda s: s.display_type == "line_section"
+        ):
+            values = {
+                "order_id": quotation.id,
+                "product_id": section.product_id.id,
+                "name": section.product_id.name,
+                "product_uom": section.product_uom_id.id,
+                "product_uom_qty": 1.0,
+                "price_unit": section.plan_amount_with_coeff,
+            }
+            self.env["sale.order.line"].create(values)
+        quotation.analytic_account_id = self.id
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Quotation"),
+            "res_model": "sale.order",
+            "res_id": quotation.id,
+            "view_mode": "form",
+            "view_type": "form",
+            "views": [
+                (
+                    self.env.ref("sale.view_order_form").id,
+                    "form",
+                )
+            ],
+        }
