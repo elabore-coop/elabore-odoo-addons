@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models, fields
+from odoo import _, models, fields
+from odoo.exceptions import UserError
 
 
 class Lead(models.Model):
@@ -15,19 +16,11 @@ class Lead(models.Model):
 
     def action_budget_forecast(self):
         if not self.analytic_account:
-            message_id = self.env["budget.forecast.message.wizard"].create(
-                {
-                    "message": "You must add an analytic account to build/access the budget forecast screen."
-                }
+            raise UserError(
+                _(
+                    "You must add an analytic account to build/access the budget forecast screen."
+                )
             )
-            return {
-                "name": "Missing Analytic Account",
-                "type": "ir.actions.act_window",
-                "view_mode": "form",
-                "res_model": "budget.forecast.message.wizard",
-                "res_id": message_id.id,
-                "target": "new",
-            }
         return self.analytic_account.action_budget_forecast()
 
     def action_new_quotation(self):

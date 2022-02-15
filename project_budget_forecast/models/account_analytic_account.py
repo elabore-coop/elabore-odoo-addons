@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api, _
+from odoo.exceptions import UserError
 
 
 class AccountAnalyticAccount(models.Model):
@@ -96,19 +97,11 @@ class AccountAnalyticAccount(models.Model):
             self.env.uid in self.project_managers.ids
             or self.env.user.has_group("base.group_system")
         ):
-            message_id = self.env["budget.forecast.message.wizard"].create(
-                {
-                    "message": "You are not manager of this project.\nPlease contact the project manager or your Odoo administrator."
-                }
+            raise UserError(
+                _(
+                    "You are not manager of this project.\nPlease contact the project manager or your Odoo administrator."
+                )
             )
-            return {
-                "name": "You are not the Project Manager",
-                "type": "ir.actions.act_window",
-                "view_mode": "form",
-                "res_model": "budget.forecast.message.wizard",
-                "res_id": message_id.id,
-                "target": "new",
-            }
         return {
             "type": "ir.actions.act_window",
             "name": _("Budget"),

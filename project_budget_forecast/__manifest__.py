@@ -90,7 +90,6 @@ This module is maintained by ELABORE.
         "data/budget_forecast_category.xml",
         "data/product_category.xml",
         "data/function.xml",
-        "wizard/message_wizard.xml",
     ],
     # only loaded in demonstration mode
     "demo": [],
