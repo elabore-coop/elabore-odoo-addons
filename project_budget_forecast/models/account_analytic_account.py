@@ -40,6 +40,11 @@ class AccountAnalyticAccount(models.Model):
         string="Project managers",
         domain=lambda self: [("groups_id", "in", self.env.ref("base.group_user").id)],
     )
+    opportunity = fields.Many2one(
+        "crm.lead",
+        string="Opportunity",
+        compute="_compute_opportunity",
+    )
 
     def default_budget_coefficients_ids(self):
         for coeff in self.budget_coefficients_ids:
@@ -53,6 +58,13 @@ class AccountAnalyticAccount(models.Model):
                 "budget_forecast": self.id,
             }
             self.env["budget.coefficient"].create(vals)
+
+    def _compute_opportunity(self):
+        lead = self.env["crm.lead"].search(
+            [("analytic_account", "=", self.id)], limit=1
+        )
+        if lead:
+            self.opportunity = lead.id
 
     def create(self, values):
         record = super(AccountAnalyticAccount, self).create(values)
@@ -161,6 +173,7 @@ class AccountAnalyticAccount(models.Model):
             }
             self.env["sale.order.line"].create(values)
         quotation.analytic_account_id = self.id
+        quotation.opportunity_id = self.opportunity.id
         return {
             "type": "ir.actions.act_window",
             "name": _("Quotation"),

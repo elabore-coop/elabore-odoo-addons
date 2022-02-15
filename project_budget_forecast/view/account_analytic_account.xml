@@ -28,6 +28,7 @@
 						</group>
 						<group>
 							<field name="project_managers" widget="many2many_tags" />
+							<field name="opportunity" />
 						</group>
 					</group>
 					<notebook>
