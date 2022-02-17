@@ -11,7 +11,10 @@ class AccountAnalyticAccount(models.Model):
     project_section_budget_ids = fields.One2many(
         "budget.forecast",
         "analytic_id",
-        domain=[("display_type", "in", ["line_section", "line_subsection"])],
+        domain=[
+            ("display_type", "in", ["line_section", "line_subsection"]),
+            ("is_summary", "=", True),
+        ],
         copy=False,
     )
     budget_coefficients_ids = fields.One2many(
@@ -83,6 +86,7 @@ class AccountAnalyticAccount(models.Model):
         for record in self:
             line_ids = record.mapped("budget_forecast_ids").filtered(
                 lambda line: (line.display_type == "line_section")
+                and (line.is_summary == True)
             )
             record.plan_amount_without_coeff = sum(
                 line_ids.mapped("plan_amount_without_coeff")

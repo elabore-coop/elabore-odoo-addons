@@ -7,7 +7,7 @@ class BudgetForecast(models.Model):
     _name = "budget.forecast"
     _description = _name
 
-    description = fields.Char("Description")
+    description = fields.Char("Description", copy=True)
     sequence = fields.Integer()
     analytic_id = fields.Many2one(
         "account.analytic.account",
@@ -15,12 +15,16 @@ class BudgetForecast(models.Model):
         required=True,
         ondelete="restrict",
         index=True,
+        copy=True,
     )
+
     main_category = fields.Many2one(
         "budget.forecast.category",
         help="Technical field for budget_forecast_category fields creation",
         ondelete="restrict",
     )
+    is_summary = fields.Boolean(copy=False, default=False)
+    summary_id = fields.Many2one("budget.forecast", store=True)
 
     display_type = fields.Selection(
         [
@@ -30,10 +34,11 @@ class BudgetForecast(models.Model):
             ("line_note", "Note"),
         ],
         help="Technical field for UX purpose.",
+        copy=True,
     )
 
-    product_id = fields.Many2one("product.product")
-    product_uom_id = fields.Many2one("uom.uom", string="Unit of Measure")
+    product_id = fields.Many2one("product.product", copy=True)
+    product_uom_id = fields.Many2one("uom.uom", string="Unit of Measure", copy=True)
 
     company_id = fields.Many2one(
         "res.company",
@@ -48,36 +53,52 @@ class BudgetForecast(models.Model):
         readonly=True,
         store=True,
         compute_sudo=True,
+        copy=True,
     )
 
-    plan_qty = fields.Float("Plan Quantity")
-    plan_price = fields.Monetary("Plan Price", default=0.00)
+    plan_qty = fields.Float("Plan Quantity", copy=False)
+    plan_price = fields.Monetary("Plan Price", default=0.00, copy=False)
     plan_amount_without_coeff = fields.Monetary(
-        "Plan Amount", compute="_calc_plan_amount_without_coeff", store=True
+        "Plan Amount", compute="_calc_plan_amount_without_coeff", store=True, copy=False
     )
     plan_amount_with_coeff = fields.Monetary(
-        "Plan Amount with coeff", compute="_calc_plan_amount_with_coeff", store=True
+        "Plan Amount with coeff",
+        compute="_calc_plan_amount_with_coeff",
+        store=True,
+        copy=False,
     )
 
     analytic_line_ids = fields.Many2many(
-        "account.analytic.line", compute="_calc_line_ids"
+        "account.analytic.line", compute="_calc_line_ids", copy=False
     )
     actual_qty = fields.Float(
-        "Actual Quantity", compute="_calc_actual", store=True, compute_sudo=True
+        "Actual Quantity",
+        compute="_calc_actual",
+        store=True,
+        compute_sudo=True,
+        copy=False,
     )
     actual_price = fields.Monetary(
-        "Actual Price", compute="_calc_actual", store=True, compute_sudo=True
+        "Actual Price",
+        compute="_calc_actual",
+        store=True,
+        compute_sudo=True,
+        copy=False,
     )
     actual_amount = fields.Monetary(
-        "Actual Amount", compute="_calc_actual", store=True, compute_sudo=True
+        "Actual Amount",
+        compute="_calc_actual",
+        store=True,
+        compute_sudo=True,
+        copy=False,
     )
     diff_amount = fields.Monetary(
-        "Diff", compute="_calc_actual", store=True, compute_sudo=True
+        "Diff", compute="_calc_actual", store=True, compute_sudo=True, copy=False
     )
     parent_id = fields.Many2one(
         "budget.forecast", store=True, compute_sudo=True, compute="_calc_parent_id"
     )
-    child_ids = fields.One2many("budget.forecast", "parent_id")
+    child_ids = fields.One2many("budget.forecast", "parent_id", copy=False)
 
     note = fields.Text(string="Note")
 
@@ -85,16 +106,63 @@ class BudgetForecast(models.Model):
     @api.returns("self", lambda value: value.id)
     def create(self, vals_list):
         records = super(BudgetForecast, self).create(vals_list)
+        records._create_category_sections()
         records._update_parent_plan()
         return records
+
+    def _create_category_sections(self):
+        for record in self:
+            if (not record.main_category) and (
+                record.display_type in ["line_section", "line_subsection"]
+            ):
+                record.is_summary = True
+                for category in self.env["budget.forecast.category"].search([]):
+                    values = {
+                        "main_category": category.id,
+                        "summary_id": record.id,
+                        "is_summary": False,
+                    }
+                    record.copy(values)
+
+    @api.onchange("description", "product_id")
+    def _sync_sections_date(self):
+        if self.display_type in ["line_section", "line_subsection"]:
+            # find similar section/sub_section lines
+            lines = self.env["budget.forecast"].search(
+                [
+                    "|",
+                    ("summary_id", "=", self.summary_id.id),
+                    ("id", "=", self.summary_id.id),
+                ]
+            )
+            for line in lines:
+                line.product_id = self.product_id.id
+                line.description = self.description
 
     def write(self, vals):
         res = super(BudgetForecast, self).write(vals)
         self._update_parent_plan()
         return res
 
-    def unlink(self):
+    def unlink(self, child_unlink=False):
         parent_ids = self.mapped("parent_id")
+        if not child_unlink:
+            for record in self:
+                if record.display_type in [
+                    "line_section",
+                    "line_subsection",
+                ]:
+                    # find similar section/sub_section lines
+                    lines = record.env["budget.forecast"].search(
+                        [
+                            ("id", "=", record.id),
+                            "|",
+                            ("summary_id", "=", record.summary_id.id),
+                            ("id", "=", record.summary_id.id),
+                        ]
+                    )
+                    for line in lines:
+                        line.unlink(True)
         res = super(BudgetForecast, self).unlink()
         parent_ids.exists()._calc_plan()
         return res
@@ -106,6 +174,7 @@ class BudgetForecast(models.Model):
         self._update_parent_plan()
         self._calc_actual()
         self._update_parent_actual()
+        self._update_summary()
 
     @api.onchange("product_id")
     def _onchange_product_id(self):
@@ -167,9 +236,10 @@ class BudgetForecast(models.Model):
             found = False
             parent_id = False
             for line in record.analytic_id.budget_forecast_ids.search(
-                [("analytic_id", "=", record.analytic_id.id)]
-                # ('main_category', '=', record.main_category.id),
-                # ('display_type', 'in', ['line_section', 'line_subsection'])]
+                [
+                    ("analytic_id", "=", record.analytic_id.id),
+                    ("main_category", "=", record.main_category.id),
+                ]
             ).sorted(key=lambda r: r.sequence, reverse=True):
                 if not found and line != record:
                     continue
@@ -188,8 +258,8 @@ class BudgetForecast(models.Model):
                     parent_id = line
                     break
             record.parent_id = parent_id
-                
-    @api.depends('analytic_id', 'child_ids')
+
+    @api.depends("analytic_id", "child_ids")
     def _calc_line_ids(self):
         for record in self:
             domain = [
@@ -228,3 +298,31 @@ class BudgetForecast(models.Model):
 
     def _update_parent_actual(self):
         self.exists().mapped("parent_id")._calc_actual()
+
+    def _update_summary(self):
+        for record in self:
+            if self.display_type in ["line_section", "line_subsection"]:
+                # find the summary section/sub_section line
+                summary_line = self.env["budget.forecast"].search(
+                    [
+                        ("id", "=", self.summary_id.id),
+                    ],
+                    limit=1,
+                )
+                # find similar section/sub_section lines
+                similar_lines = self.env["budget.forecast"].search(
+                    [
+                        ("summary_id", "=", self.summary_id.id),
+                        ("id", "!=", self.id),
+                    ]
+                )
+                # Calculate the total amounts
+                summary_line.plan_amount_without_coeff = 0
+                summary_line.plan_amount_with_coeff = 0
+                summary_line.actual_amount = 0
+                for line in similar_lines:
+                    summary_line.plan_amount_without_coeff += (
+                        line.plan_amount_without_coeff
+                    )
+                    summary_line.plan_amount_with_coeff += line.plan_amount_with_coeff
+                    summary_line.actual_amount += line.actual_amount

@@ -26,8 +26,8 @@ _view_arch = """
         <field name="%(field_name)s" widget="section_category_and_note_one2many" mode="tree" nolabel="1">
             <tree editable="bottom">            
                 <control>
-                    <create string="Add a section" context="{'default_display_type': 'line_section'}" />
-                    <create string="Add a sub-section" context="{'default_display_type': 'line_subsection'}" />
+                    <create string="Add a section" context="{'default_display_type': 'line_section', 'default_is_summary': True}" />
+                    <create string="Add a sub-section" context="{'default_display_type': 'line_subsection', 'default_is_summary': True}" />
                     <create string="Add an article" context="{'default_display_type': 'line_article', 'default_main_category' : %(id)d}" />
                     <create string="Add a note" context="{'default_display_type': 'line_note', 'default_main_category' : %(id)d}" />
                 </control>                
@@ -86,8 +86,7 @@ class BudgetForecastCategory(models.Model):
             "ttype": "one2many",
             "relation": "budget.forecast",
             "relation_field": "analytic_id",
-            "domain": "['|',('main_category.code','=','%s'),('display_type','in',['line_section','line_subsection'])]"
-            % (self.code),
+            "domain": "[('main_category.code','=','%s')]" % (self.code),
             "copied": False,
         }
         self.field_id = self.env["ir.model.fields"].create(vals)
