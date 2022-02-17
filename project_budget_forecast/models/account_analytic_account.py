@@ -66,9 +66,11 @@ class AccountAnalyticAccount(models.Model):
         if lead:
             self.opportunity = lead.id
 
+    @api.model
     def create(self, values):
         record = super(AccountAnalyticAccount, self).create(values)
-        record.project_managers = self.env["res.users"].browse(self.env.user.id)
+        if not record.project_managers:
+            record.project_managers = self.env["res.users"].browse(self.env.user.id)
         record.default_budget_coefficients_ids()
         return record
 
