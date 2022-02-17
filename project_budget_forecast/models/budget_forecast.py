@@ -7,6 +7,7 @@ class BudgetForecast(models.Model):
     _name = "budget.forecast"
     _description = _name
 
+    name = fields.Char("Name", compute="_compute_name")
     description = fields.Char("Description", copy=True)
     sequence = fields.Integer()
     analytic_id = fields.Many2one(
@@ -166,6 +167,11 @@ class BudgetForecast(models.Model):
         res = super(BudgetForecast, self).unlink()
         parent_ids.exists()._calc_plan()
         return res
+
+    @api.onchange("description")
+    def _compute_name(self):
+        for record in self:
+            record.name = record.description
 
     def refresh(self):
         self._calc_parent_id()
