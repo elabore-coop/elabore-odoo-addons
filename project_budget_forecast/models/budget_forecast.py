@@ -288,6 +288,18 @@ class BudgetForecast(models.Model):
                 abs(sum(line_ids.mapped("unit_amount"))) + child_actual_qty
             )
             record.actual_amount = -sum(line_ids.mapped("amount")) + child_actual_amount
+
+            # Add Draft Invoice lines ids
+            domain = [
+                ("analytic_account_id", "=", record.analytic_id.id),
+                ("parent_state", "=", "draft"),
+                ("product_id", "=", record.product_id.id),
+            ]
+            draft_invoice_lines = self.env["account.move.line"].search(domain)
+            for invoice_line in draft_invoice_lines:
+                record.actual_qty = record.actual_qty + invoice_line.quantity
+                record.actual_amount = record.actual_amount + invoice_line.price_unit
+
             record.actual_price = abs(
                 record.actual_qty and record.actual_amount / record.actual_qty
             )
