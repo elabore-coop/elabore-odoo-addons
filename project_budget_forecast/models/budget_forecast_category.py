@@ -23,13 +23,13 @@ _view_arch = """
 <data>
 <notebook> 
     <page name="%(name)s" string="%(name)s" >
-        <field name="%(field_name)s" widget="section_category_and_note_one2many" mode="tree" nolabel="1">
+        <field name="%(field_name)s" widget="section_category_and_note_one2many" mode="tree" nolabel="1" context="{'default_main_category' : %(id)d}">
             <tree editable="bottom">            
                 <control>
-                    <create string="Add a section" context="{'default_display_type': 'line_section', 'default_is_summary': True}" />
-                    <create string="Add a sub-section" context="{'default_display_type': 'line_subsection', 'default_is_summary': True}" />
-                    <create string="Add an article" context="{'default_display_type': 'line_article', 'default_main_category' : %(id)d}" />
-                    <create string="Add a note" context="{'default_display_type': 'line_note', 'default_main_category' : %(id)d}" />
+                    <create string="Add a section" context="{'default_display_type': 'line_section'}" />
+                    <create string="Add a sub-section" context="{'default_display_type': 'line_subsection'}" />
+                    <create string="Add an article" context="{'default_display_type': 'line_article'}" />
+                    <create string="Add a note" context="{'default_display_type': 'line_note'}" />
                 </control>                
                 <field name="sequence" widget="handle" />  
                 <field name="main_category" invisible="1" optional="hide" />

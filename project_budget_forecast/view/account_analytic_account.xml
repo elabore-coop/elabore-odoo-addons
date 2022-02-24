@@ -37,6 +37,7 @@
 								<tree default_order="sequence">
 									<field name="sequence" invisible="1" />
 									<field name="product_id" />
+									<field name="description" />
 									<field name="plan_amount_without_coeff" />
 									<field name="plan_amount_with_coeff" />
 									<field name="actual_amount" attrs="{'column_invisible' : [('parent.display_actual_amounts', '=', False)]}" />

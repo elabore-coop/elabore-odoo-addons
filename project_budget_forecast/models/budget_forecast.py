@@ -26,7 +26,7 @@ class BudgetForecast(models.Model):
     )
     is_summary = fields.Boolean(copy=False, default=False)
     summary_id = fields.Many2one("budget.forecast", store=True)
-
+    copy_from_other_category = fields.Boolean(copy=False, default=False)
     display_type = fields.Selection(
         [
             ("line_section", "Section"),
@@ -107,41 +107,44 @@ class BudgetForecast(models.Model):
     @api.returns("self", lambda value: value.id)
     def create(self, vals_list):
         records = super(BudgetForecast, self).create(vals_list)
+        for record in records:
+            if not record.display_type:
+                record.display_type = "line_article"
         records._create_category_sections()
         records._update_parent_plan()
         return records
 
     def _create_category_sections(self):
         for record in self:
-            if (not record.main_category) and (
-                record.display_type in ["line_section", "line_subsection"]
-            ):
-                record.is_summary = True
-                for category in self.env["budget.forecast.category"].search([]):
+            if (not record.copy_from_other_category) and record.display_type in [
+                "line_section",
+                "line_subsection",
+            ]:
+                # Create summary line
+                values = {
+                    "main_category": False,
+                    "summary_id": False,
+                    "is_summary": True,
+                    "copy_from_other_category": True,
+                }
+                summary_record = record.copy(values)
+                record.summary_id = summary_record.id
+                # Create other category lines
+                for category in self.env["budget.forecast.category"].search(
+                    [("id", "!=", record.main_category.id)]
+                ):
                     values = {
                         "main_category": category.id,
-                        "summary_id": record.id,
+                        "summary_id": summary_record.id,
                         "is_summary": False,
+                        "copy_from_other_category": True,
                     }
                     record.copy(values)
 
-    @api.onchange("description", "product_id")
-    def _sync_sections_date(self):
-        if self.display_type in ["line_section", "line_subsection"]:
-            # find similar section/sub_section lines
-            lines = self.env["budget.forecast"].search(
-                [
-                    "|",
-                    ("summary_id", "=", self.summary_id.id),
-                    ("id", "=", self.summary_id.id),
-                ]
-            )
-            for line in lines:
-                line.product_id = self.product_id.id
-                line.description = self.description
-
-    def write(self, vals):
+    def write(self, vals, one_more_loop=True):
         res = super(BudgetForecast, self).write(vals)
+        if one_more_loop:
+            self._sync_sections_data()
         self._update_parent_plan()
         return res
 
@@ -149,14 +152,16 @@ class BudgetForecast(models.Model):
         parent_ids = self.mapped("parent_id")
         if not child_unlink:
             for record in self:
-                if record.display_type in [
-                    "line_section",
-                    "line_subsection",
-                ]:
+                if not record.is_summary and (
+                    record.display_type
+                    in [
+                        "line_section",
+                        "line_subsection",
+                    ]
+                ):
                     # find similar section/sub_section lines
                     lines = record.env["budget.forecast"].search(
                         [
-                            ("id", "=", record.id),
                             "|",
                             ("summary_id", "=", record.summary_id.id),
                             ("id", "=", record.summary_id.id),
@@ -168,20 +173,6 @@ class BudgetForecast(models.Model):
         parent_ids.exists()._calc_plan()
         return res
 
-    @api.onchange("description")
-    def _compute_name(self):
-        for record in self:
-            record.name = record.description
-
-    def refresh(self):
-        self._calc_parent_id()
-        self._calc_line_ids()
-        self._calc_plan()
-        self._update_parent_plan()
-        self._calc_actual()
-        self._update_parent_actual()
-        self._update_summary()
-
     @api.onchange("product_id")
     def _onchange_product_id(self):
         if self.product_id and not self.description:
@@ -191,6 +182,40 @@ class BudgetForecast(models.Model):
             self.plan_price = self.product_id.standard_price
         else:
             self._calc_plan_price()
+
+    @api.onchange("description")
+    def _compute_name(self):
+        for record in self:
+            record.name = record.description
+
+    def _sync_sections_data(self):
+        for record in self:
+            if record.display_type in ["line_section", "line_subsection"]:
+                if not record.is_summary:
+                    # find corresponding line summary
+                    summary_line = self.env["budget.forecast"].browse(
+                        record.summary_id.id
+                    )
+                    values = {
+                        "product_id": record.product_id.id,
+                        "description": record.description,
+                    }
+                    summary_line.write(values, False)
+
+                # find similar category section/sub_section lines
+                lines = self.env["budget.forecast"].search(
+                    [
+                        ("display_type", "=", record.display_type),
+                        ("summary_id", "=", record.summary_id.id),
+                        ("is_summary", "=", False),
+                    ]
+                )
+                for line in lines:
+                    values = {
+                        "product_id": record.product_id.id,
+                        "description": record.description,
+                    }
+                    line.write(values, False)
 
     @api.depends("plan_qty", "plan_price", "child_ids")
     def _calc_plan_amount_without_coeff(self):
@@ -319,28 +344,31 @@ class BudgetForecast(models.Model):
 
     def _update_summary(self):
         for record in self:
-            if self.display_type in ["line_section", "line_subsection"]:
-                # find the summary section/sub_section line
-                summary_line = self.env["budget.forecast"].search(
+            if record.is_summary and (
+                record.display_type in ["line_section", "line_subsection"]
+            ):
+                # find corresponding category section/sub_section lines
+                lines = self.env["budget.forecast"].search(
                     [
-                        ("id", "=", self.summary_id.id),
-                    ],
-                    limit=1,
-                )
-                # find similar section/sub_section lines
-                similar_lines = self.env["budget.forecast"].search(
-                    [
-                        ("summary_id", "=", self.summary_id.id),
-                        ("id", "!=", self.id),
+                        ("display_type", "in", ["line_section", "line_subsection"]),
+                        ("summary_id", "=", record.id),
+                        ("is_summary", "=", False),
                     ]
                 )
                 # Calculate the total amounts
-                summary_line.plan_amount_without_coeff = 0
-                summary_line.plan_amount_with_coeff = 0
-                summary_line.actual_amount = 0
-                for line in similar_lines:
-                    summary_line.plan_amount_without_coeff += (
-                        line.plan_amount_without_coeff
-                    )
-                    summary_line.plan_amount_with_coeff += line.plan_amount_with_coeff
-                    summary_line.actual_amount += line.actual_amount
+                record.plan_amount_without_coeff = 0
+                record.plan_amount_with_coeff = 0
+                record.actual_amount = 0
+                for line in lines:
+                    record.plan_amount_without_coeff += line.plan_amount_without_coeff
+                    record.plan_amount_with_coeff += line.plan_amount_with_coeff
+                    record.actual_amount += line.actual_amount
+
+    def refresh(self):
+        self._calc_parent_id()
+        self._calc_line_ids()
+        self._calc_plan()
+        self._update_parent_plan()
+        self._calc_actual()
+        self._update_parent_actual()
+        self._update_summary()
