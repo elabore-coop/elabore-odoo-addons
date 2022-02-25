@@ -179,13 +179,19 @@ class BudgetForecast(models.Model):
 
     @api.onchange("product_id")
     def _onchange_product_id(self):
-        if self.product_id and not self.description:
+        if self.product_id:
             self.description = self.product_id.name
-        self.product_uom_id = self.product_id.uom_id
-        if self.display_type == "line_article":
-            self.plan_price = self.product_id.standard_price
+            self.product_uom_id = self.product_id.uom_id
+            if self.display_type == "line_article":
+                self.plan_price = self.product_id.standard_price
+            else:
+                self._calc_plan_price()
         else:
-            self._calc_plan_price()
+            self.description = ""
+            self.product_uom_id = False
+            self.plan_price = 0
+            if self.display_type != "line_article":
+                self._calc_plan_price()
 
     @api.onchange("description")
     def _compute_name(self):
