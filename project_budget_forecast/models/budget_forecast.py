@@ -351,8 +351,15 @@ class BudgetForecast(models.Model):
             ]
             draft_invoice_lines = self.env["account.move.line"].search(domain)
             for invoice_line in draft_invoice_lines:
-                record.actual_qty = record.actual_qty + invoice_line.quantity
-                record.actual_amount = record.actual_amount + invoice_line.price_unit
+                if invoice_line.move_id.type == "in_invoice":
+                    record.actual_qty = record.actual_qty + invoice_line.quantity
+                    record.actual_amount = (
+                        record.actual_amount + invoice_line.price_unit
+                    )
+                elif invoice_line.move_id.type == "out_invoice":
+                    record.actual_amount = (
+                        record.actual_amount - invoice_line.price_unit
+                    )
 
             record.actual_price = abs(
                 record.actual_qty and record.actual_amount / record.actual_qty
