@@ -103,6 +103,10 @@ class BudgetForecast(models.Model):
 
     note = fields.Text(string="Note")
 
+    ###################################################################################
+    # Budget lines management
+    ###################################################################################
+
     @api.model_create_multi
     @api.returns("self", lambda value: value.id)
     def create(self, vals_list):
@@ -217,6 +221,76 @@ class BudgetForecast(models.Model):
                     }
                     line.write(values, False)
 
+    @api.depends("analytic_id", "child_ids")
+    def _calc_line_ids(self):
+        for record in self:
+            domain = [
+                ("account_id", "=", record.analytic_id.id),
+                ("company_id", "=", record.company_id.id),
+                ("product_id", "=", record.product_id.id),
+            ]
+            record.analytic_line_ids = self.env["account.analytic.line"].search(domain)
+
+    @api.depends(
+        "analytic_id.budget_forecast_ids", "sequence", "parent_id", "child_ids"
+    )
+    def _calc_parent_id(self):
+        for record in self:
+            if record.display_type == "line_section":
+                # A Section is the top of the line hierarchy => no parent
+                record.parent_id = False
+                continue
+            found = False
+            parent_id = False
+            for line in record.analytic_id.budget_forecast_ids.search(
+                [
+                    ("analytic_id", "=", record.analytic_id.id),
+                    ("main_category", "=", record.main_category.id),
+                ]
+            ).sorted(key=lambda r: r.sequence, reverse=True):
+                if not found and line != record:
+                    continue
+                if line == record:
+                    found = True
+                    continue
+                if line.display_type in ["line_article", "line_note"]:
+                    continue
+                elif line.display_type == "line_subsection":
+                    if record.display_type in ["line_article", "line_note"]:
+                        parent_id = line
+                        break
+                    else:
+                        continue
+                elif line.display_type == "line_section":
+                    parent_id = line
+                    break
+            record.parent_id = parent_id
+
+    def refresh(self):
+        self._calc_parent_id()
+        self._calc_line_ids()
+        self._calc_plan()
+        self._update_parent_plan()
+        self._calc_actual()
+        self._update_parent_actual()
+        self._update_summary()
+
+    ###################################################################################
+    # Amounts calculation
+    ###################################################################################
+
+    def _update_parent_plan(self):
+        self.exists().mapped("parent_id")._calc_plan()
+
+    def _update_parent_actual(self):
+        self.exists().mapped("parent_id")._calc_actual()
+
+    def _calc_plan(self):
+        self._calc_plan_qty()
+        self._calc_plan_price()
+        self._calc_plan_amount_without_coeff()
+        self._calc_plan_amount_with_coeff()
+
     @api.depends("plan_qty", "plan_price", "child_ids")
     def _calc_plan_amount_without_coeff(self):
         for record in self:
@@ -255,51 +329,6 @@ class BudgetForecast(models.Model):
             elif record.display_type == "line_note":
                 record.plan_price = 0.00
 
-    @api.depends(
-        "analytic_id.budget_forecast_ids", "sequence", "parent_id", "child_ids"
-    )
-    def _calc_parent_id(self):
-        for record in self:
-            if record.display_type == "line_section":
-                # A Section is the top of the line hierarchy => no parent
-                record.parent_id = False
-                continue
-            found = False
-            parent_id = False
-            for line in record.analytic_id.budget_forecast_ids.search(
-                [
-                    ("analytic_id", "=", record.analytic_id.id),
-                    ("main_category", "=", record.main_category.id),
-                ]
-            ).sorted(key=lambda r: r.sequence, reverse=True):
-                if not found and line != record:
-                    continue
-                if line == record:
-                    found = True
-                    continue
-                if line.display_type in ["line_article", "line_note"]:
-                    continue
-                elif line.display_type == "line_subsection":
-                    if record.display_type in ["line_article", "line_note"]:
-                        parent_id = line
-                        break
-                    else:
-                        continue
-                elif line.display_type == "line_section":
-                    parent_id = line
-                    break
-            record.parent_id = parent_id
-
-    @api.depends("analytic_id", "child_ids")
-    def _calc_line_ids(self):
-        for record in self:
-            domain = [
-                ("account_id", "=", record.analytic_id.id),
-                ("company_id", "=", record.company_id.id),
-                ("product_id", "=", record.product_id.id),
-            ]
-            record.analytic_line_ids = self.env["account.analytic.line"].search(domain)
-
     @api.depends("analytic_id.line_ids.amount")
     def _calc_actual(self):
         for record in self:
@@ -330,18 +359,6 @@ class BudgetForecast(models.Model):
             )
             record.diff_amount = record.plan_amount_with_coeff - record.actual_amount
 
-    def _calc_plan(self):
-        self._calc_plan_qty()
-        self._calc_plan_price()
-        self._calc_plan_amount_without_coeff()
-        self._calc_plan_amount_with_coeff()
-
-    def _update_parent_plan(self):
-        self.exists().mapped("parent_id")._calc_plan()
-
-    def _update_parent_actual(self):
-        self.exists().mapped("parent_id")._calc_actual()
-
     def _update_summary(self):
         for record in self:
             if record.is_summary and (
@@ -363,12 +380,3 @@ class BudgetForecast(models.Model):
                     record.plan_amount_without_coeff += line.plan_amount_without_coeff
                     record.plan_amount_with_coeff += line.plan_amount_with_coeff
                     record.actual_amount += line.actual_amount
-
-    def refresh(self):
-        self._calc_parent_id()
-        self._calc_line_ids()
-        self._calc_plan()
-        self._update_parent_plan()
-        self._calc_actual()
-        self._update_parent_actual()
-        self._update_summary()
