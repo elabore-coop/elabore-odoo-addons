@@ -115,7 +115,6 @@ class BudgetForecast(models.Model):
             if not record.display_type:
                 record.display_type = "line_article"
         records._create_category_sections()
-        records._update_parent_plan()
         return records
 
     def _create_category_sections(self):
@@ -149,7 +148,6 @@ class BudgetForecast(models.Model):
         res = super(BudgetForecast, self).write(vals)
         if one_more_loop:
             self._sync_sections_data()
-        self._update_parent_plan()
         return res
 
     def unlink(self, child_unlink=False):
@@ -276,20 +274,11 @@ class BudgetForecast(models.Model):
         self._calc_parent_id()
         self._calc_line_ids()
         self._calc_plan()
-        self._update_parent_plan()
         self._calc_actual()
-        self._update_parent_actual()
-        self._update_summary()
 
     ###################################################################################
     # Amounts calculation
     ###################################################################################
-
-    def _update_parent_plan(self):
-        self.exists().mapped("parent_id")._calc_plan()
-
-    def _update_parent_actual(self):
-        self.exists().mapped("parent_id")._calc_actual()
 
     def _calc_plan(self):
         self._calc_plan_qty()
@@ -371,25 +360,3 @@ class BudgetForecast(models.Model):
                 record.actual_qty and record.actual_amount / record.actual_qty
             )
             record.diff_amount = record.plan_amount_with_coeff - record.actual_amount
-
-    def _update_summary(self):
-        for record in self:
-            if record.is_summary and (
-                record.display_type in ["line_section", "line_subsection"]
-            ):
-                # find corresponding category section/sub_section lines
-                lines = self.env["budget.forecast"].search(
-                    [
-                        ("display_type", "in", ["line_section", "line_subsection"]),
-                        ("summary_id", "=", record.id),
-                        ("is_summary", "=", False),
-                    ]
-                )
-                # Calculate the total amounts
-                record.plan_amount_without_coeff = 0
-                record.plan_amount_with_coeff = 0
-                record.actual_amount = 0
-                for line in lines:
-                    record.plan_amount_without_coeff += line.plan_amount_without_coeff
-                    record.plan_amount_with_coeff += line.plan_amount_with_coeff
-                    record.actual_amount += line.actual_amount

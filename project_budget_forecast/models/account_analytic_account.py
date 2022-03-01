@@ -153,11 +153,39 @@ class AccountAnalyticAccount(models.Model):
             else:
                 record.display_actual_amounts = True
 
+    def _update_summary(self):
+        for record in self:
+            summary_line_ids = (
+                record.mapped("budget_forecast_ids")
+                .filtered(lambda x: x.is_summary)
+                .sorted(key=lambda r: r.sequence, reverse=True)
+            )
+            for summary_line in summary_line_ids:
+                # find corresponding category section/sub_section lines
+                lines = record.mapped("budget_forecast_ids").filtered(
+                    lambda x: (
+                        (not x.is_summary) and (x.summary_id.id == summary_line.id)
+                    )
+                )
+                # Calculate the total amounts
+                summary_line.plan_amount_without_coeff = 0
+                summary_line.plan_amount_with_coeff = 0
+                summary_line.actual_amount = 0
+                for line in lines:
+                    summary_line.plan_amount_without_coeff += (
+                        line.plan_amount_without_coeff
+                    )
+                    summary_line.plan_amount_with_coeff += line.plan_amount_with_coeff
+                    summary_line.actual_amount += line.actual_amount
+
     def action_refresh(self):
         for record in self:
-            line_ids = record.mapped("budget_forecast_ids")
+            line_ids = record.mapped("budget_forecast_ids").sorted(
+                key=lambda r: r.sequence, reverse=True
+            )
             for line in line_ids:
                 line.refresh()
+            record._update_summary()
 
     def action_create_quotation(self):
         quotation = self.env["sale.order"].create(

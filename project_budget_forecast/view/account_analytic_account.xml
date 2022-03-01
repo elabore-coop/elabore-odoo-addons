@@ -33,14 +33,14 @@
 					</group>
 					<notebook>
 						<page name="summary" string="Summary" attrs="{'invisible' : [('project_section_budget_ids', '=', False)]}">
-							<field name="project_section_budget_ids" widget="section_category_and_note_one2many" mode="tree" nolabel="1" readonly="1">
+							<field name="project_section_budget_ids" widget="section_category_and_note_one2many" mode="tree" nolabel="1" create="false">
 								<tree default_order="sequence">
-									<field name="sequence" invisible="1" />
-									<field name="product_id" />
-									<field name="description" />
-									<field name="plan_amount_without_coeff" />
-									<field name="plan_amount_with_coeff" />
-									<field name="actual_amount" attrs="{'column_invisible' : [('parent.display_actual_amounts', '=', False)]}" />
+									<field name="sequence" widget="handle" />
+									<field name="product_id" readonly="1" />
+									<field name="description" readonly="1" />
+									<field name="plan_amount_without_coeff" readonly="1" />
+									<field name="plan_amount_with_coeff" readonly="1" />
+									<field name="actual_amount" attrs="{'column_invisible' : [('parent.display_actual_amounts', '=', False)]}" readonly="1" />
 								</tree>
 							</field>
 						</page>
