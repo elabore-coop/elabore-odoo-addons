@@ -29,8 +29,10 @@ class AccountAnalyticAccount(models.Model):
     plan_amount_with_coeff = fields.Float(
         "Plan Amount with coeff", compute="_calc_budget_amount"
     )
-    actual_amount = fields.Float("Actual Amount", compute="_calc_budget_amount")
-    diff_amount = fields.Float("Diff Amount", compute="_calc_budget_amount")
+    total_expenses = fields.Float("Total expenses", compute="_calc_budget_amount")
+    remaining_budget = fields.Float("Remaining budget", compute="_calc_budget_amount")
+    total_incomes = fields.Float("Total incomes", compute="_calc_budget_amount")
+    project_balance = fields.Float("Project Balance", compute="_calc_budget_amount")
     budget_category_ids = fields.Many2many(
         "budget.forecast.category", compute="_calc_budget_category_ids"
     )
@@ -88,14 +90,33 @@ class AccountAnalyticAccount(models.Model):
                 lambda line: (line.display_type == "line_section")
                 and (line.is_summary == True)
             )
+            # Planned amounts
             record.plan_amount_without_coeff = sum(
                 line_ids.mapped("plan_amount_without_coeff")
             )
             record.plan_amount_with_coeff = sum(
                 line_ids.mapped("plan_amount_with_coeff")
             )
-            record.actual_amount = sum(line_ids.mapped("actual_amount"))
-            record.diff_amount = record.plan_amount_with_coeff - record.actual_amount
+            # Expenses
+            record.total_expenses = sum(line_ids.mapped("actual_amount"))
+            record.remaining_budget = (
+                record.plan_amount_with_coeff - record.total_expenses
+            )
+            # Incomes
+            record.total_incomes = 0
+            domain = [
+                ("analytic_account_id", "=", record.id),
+                ("parent_state", "in", ["draft", "posted"]),
+                ("move_id.type", "=", "out_invoice"),
+            ]
+            draft_invoice_lines = self.env["account.move.line"].search(domain)
+            for invoice_line in draft_invoice_lines:
+                if invoice_line.price_subtotal > 0:
+                    record.total_incomes = (
+                        record.total_incomes + invoice_line.price_subtotal
+                    )
+            # Balance
+            record.project_balance = record.total_incomes - record.total_expenses
 
     def _calc_global_coeff(self):
         for record in self:
@@ -186,6 +207,7 @@ class AccountAnalyticAccount(models.Model):
             for line in line_ids:
                 line.refresh()
             record._update_summary()
+            record._calc_budget_amount()
 
     def action_create_quotation(self):
         quotation = self.env["sale.order"].create(

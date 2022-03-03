@@ -87,7 +87,7 @@ class BudgetForecast(models.Model):
         copy=False,
     )
     actual_amount = fields.Monetary(
-        "Actual Amount",
+        "Expenses",
         compute="_calc_actual",
         store=True,
         compute_sudo=True,
@@ -332,7 +332,7 @@ class BudgetForecast(models.Model):
             if record.child_ids:
                 child_actual_qty = sum(record.mapped("child_ids.actual_qty"))
                 child_actual_amount = sum(record.mapped("child_ids.actual_amount"))
-            line_ids = record.analytic_line_ids
+            line_ids = record.analytic_line_ids.filtered(lambda x: x.amount < 0)
             record.actual_qty = (
                 abs(sum(line_ids.mapped("unit_amount"))) + child_actual_qty
             )
@@ -350,10 +350,6 @@ class BudgetForecast(models.Model):
                     record.actual_qty = record.actual_qty + invoice_line.quantity
                     record.actual_amount = (
                         record.actual_amount + invoice_line.price_unit
-                    )
-                elif invoice_line.move_id.type == "out_invoice":
-                    record.actual_amount = (
-                        record.actual_amount - invoice_line.price_unit
                     )
 
             record.actual_price = abs(

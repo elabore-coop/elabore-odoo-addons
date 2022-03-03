@@ -20,13 +20,19 @@
 				</header>
 				<sheet string="Project Budget">
 					<group>
-						<group>
+						<group name="planned_amounts" string="Planned amounts">
 							<field name="plan_amount_without_coeff" />
 							<field name="plan_amount_with_coeff" />
-							<field name="actual_amount" attrs="{'invisible' : [('display_actual_amounts', '=', False)]}" />
-							<field name="diff_amount" attrs="{'invisible' : [('display_actual_amounts', '=', False)]}" />
 						</group>
-						<group>
+						<group name="expenses_amounts" string="Expenses" attrs="{'invisible' : [('display_actual_amounts', '=', False)]}">
+							<field name="total_expenses" attrs="{'invisible' : [('display_actual_amounts', '=', False)]}" />
+							<field name="remaining_budget" attrs="{'invisible' : [('display_actual_amounts', '=', False)]}" />
+						</group>
+						<group name="incomes_balance" string="Incomes and Balance" attrs="{'invisible' : [('display_actual_amounts', '=', False)]}">
+							<field name="total_incomes" attrs="{'invisible' : [('display_actual_amounts', '=', False)]}" />
+							<field name="project_balance" attrs="{'invisible' : [('display_actual_amounts', '=', False)]}" />
+						</group>
+						<group name="project_management" string="Project management">
 							<field name="project_managers" widget="many2many_tags" />
 							<field name="opportunity" />
 						</group>
