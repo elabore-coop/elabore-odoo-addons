@@ -12,9 +12,12 @@ class ProductTemplate(models.Model):
         compute="_calc_budget_category_id",
     )
     budget_level = fields.Selection(
-        [("section", "Section"), ("category", "Category"), ("article", "Article")],
+        [
+            ("line_section", "Section"),
+            ("line_subsection", "Sub-Section"),
+            ("line_article", "Article"),
+        ],
         string="Budget level",
-        required=True,
         default="article",
     )
 

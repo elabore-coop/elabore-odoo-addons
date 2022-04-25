@@ -17,6 +17,7 @@
 							<field name="analytic_id" />
 							<field name="is_summary" />
 							<field name="main_category" />
+							<field name="display_type" />
 							<field name="parent_id" />
 							<field name="sequence" />
 						</group>

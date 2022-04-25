@@ -38,7 +38,9 @@ class BudgetForecast(models.Model):
         copy=True,
     )
 
-    product_id = fields.Many2one("product.product", copy=True)
+    product_id = fields.Many2one(
+        "product.product", copy=True, domain="[('budget_level', '=', display_type)]"
+    )
     product_uom_id = fields.Many2one("uom.uom", string="Unit of Measure", copy=True)
 
     company_id = fields.Many2one(
