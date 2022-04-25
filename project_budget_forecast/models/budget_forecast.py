@@ -327,32 +327,45 @@ class BudgetForecast(models.Model):
     @api.depends("analytic_id.line_ids.amount")
     def _calc_actual(self):
         for record in self:
-            child_actual_qty = 0
-            child_actual_amount = 0
-            if record.child_ids:
-                child_actual_qty = sum(record.mapped("child_ids.actual_qty"))
-                child_actual_amount = sum(record.mapped("child_ids.actual_amount"))
-            line_ids = record.analytic_line_ids.filtered(lambda x: x.amount < 0)
-            record.actual_qty = (
-                abs(sum(line_ids.mapped("unit_amount"))) + child_actual_qty
-            )
-            record.actual_amount = -sum(line_ids.mapped("amount")) + child_actual_amount
+            if record.display_type in ["line_section", "line_subsection"]:
+                if record.child_ids:
+                    record.actual_qty = sum(record.mapped("child_ids.actual_qty"))
+                    record.actual_amount = sum(record.mapped("child_ids.actual_amount"))
+            elif record.display_type == "line_note":
+                record.actual_qty = 0
+                record.actual_amount = 0.00
+            else:
+                line_ids = record.analytic_line_ids.filtered(
+                    lambda x: x.move_id.move_id.type
+                    not in ["out_invoice", "out_refund"]
+                )
+                record.actual_qty = abs(sum(line_ids.mapped("unit_amount")))
+                record.actual_amount = -sum(line_ids.mapped("amount"))
 
-            # Add Draft Invoice lines ids
-            domain = [
-                ("analytic_account_id", "=", record.analytic_id.id),
-                ("parent_state", "=", "draft"),
-                ("product_id", "=", record.product_id.id),
-            ]
-            draft_invoice_lines = self.env["account.move.line"].search(domain)
-            for invoice_line in draft_invoice_lines:
-                if invoice_line.move_id.type == "in_invoice":
-                    record.actual_qty = record.actual_qty + invoice_line.quantity
-                    record.actual_amount = (
-                        record.actual_amount + invoice_line.price_unit
-                    )
+                # Add Draft Invoice lines ids
+                domain = [
+                    ("analytic_account_id", "=", record.analytic_id.id),
+                    ("parent_state", "=", "draft"),
+                    ("product_id", "=", record.product_id.id),
+                    ("move_id.type", "in", ["in_invoice", "in_refund"]),
+                ]
+                draft_invoice_lines = self.env["account.move.line"].search(domain)
+                for invoice_line in draft_invoice_lines:
+                    if invoice_line.move_id.type == "in_invoice":
+                        record.actual_qty = record.actual_qty + invoice_line.quantity
+                        record.actual_amount = (
+                            record.actual_amount + invoice_line.price_subtotal
+                        )
+                    elif invoice_line.move_id.type == "in_refund":
+                        record.actual_qty = record.actual_qty - invoice_line.quantity
+                        record.actual_amount = (
+                            record.actual_amount - invoice_line.price_subtotal
+                        )
 
-            record.actual_price = abs(
-                record.actual_qty and record.actual_amount / record.actual_qty
-            )
+            if record.actual_qty != 0:
+                record.actual_price = abs(
+                    record.actual_qty and record.actual_amount / record.actual_qty
+                )
+            else:
+                record.actual_price = 0.00
             record.diff_amount = record.plan_amount_with_coeff - record.actual_amount

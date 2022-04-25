@@ -107,13 +107,17 @@ class AccountAnalyticAccount(models.Model):
             domain = [
                 ("analytic_account_id", "=", record.id),
                 ("parent_state", "in", ["draft", "posted"]),
-                ("move_id.type", "=", "out_invoice"),
+                ("move_id.type", "in", ["out_invoice", "out_refund"]),
             ]
             draft_invoice_lines = self.env["account.move.line"].search(domain)
             for invoice_line in draft_invoice_lines:
-                if invoice_line.price_subtotal > 0:
+                if invoice_line.move_id.type == "out_invoice":
                     record.total_incomes = (
                         record.total_incomes + invoice_line.price_subtotal
+                    )
+                elif invoice_line.move_id.type == "out_refund":
+                    record.total_incomes = (
+                        record.total_incomes - invoice_line.price_subtotal
                     )
             # Balance
             record.project_balance = record.total_incomes - record.total_expenses
